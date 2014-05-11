@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widget>
+    <ThumbIcon>icon/logo_106-86.png</ThumbIcon>
+    <BigThumbIcon>icon/logo_115-95.png</BigThumbIcon>
+    <ListIcon>icon/logo_85-70.png</ListIcon>
+    <BigListIcon>icon/logo_95-78.png</BigListIcon>
+	<fullwidget>y</fullwidget>
+	<srcctl>y</srcctl>
+	<ticker>n</ticker>
+	<childlock>n</childlock>
+	<audiomute>n</audiomute>
+	<videomute>n</videomute>
+	<dcont>n</dcont>
+	<type>user</type>
+	<widgetname>NRK Nett-TV</widgetname>
+	<width>1280</width>
+	<height>720</height>
+	<author>
+		<name>Marius Thøring</name>
+		<email></email>
+		<link></link>
+		<organization></organization>
+	</author>
+</widget>

@@ -1,0 +1,158 @@
+* {
+	padding: 0;
+	margin: 0;
+	border: 0;
+}
+
+body {
+	width: 1280px;
+	height: 720px;
+	overflow: hidden;
+}
+
+.background {
+	z-index: -9999;
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	width: 1280px;
+	height: 720px;
+	background-position: center; 
+	background-repeat: no-repeat;
+	background-size: contain;
+	transition: opacity 1s cubic-bezier(.02, .01, .47, 1);
+	-webkit-transition: opacity 1s cubic-bezier(.02, .01, .47, 1);
+}
+
+#info {
+	z-index: -9997;
+	position: absolute;
+	padding-top: 4px;
+	top: 720px;
+	height: 200px;
+	left: 0px;
+	width: 1280px;
+	color: white;
+	font-size: 21px;
+	text-align: center;
+	background-color: black;
+	transition: top 2s cubic-bezier(.02, .01, .47, 1);
+	-webkit-transition: top 2s cubic-bezier(.02, .01, .47, 1);
+}
+
+#clock {
+	display: none;
+	z-index: -9998;
+	position: absolute;
+	overflow: hidden;
+	top: 547px;
+	left: 480px;
+	width: 320px;
+	height: 40px;
+	padding-top: 8px;
+	color: rgb(128,128,128);
+	font-size: 34px;
+	text-align: center;
+	transition: opacity 1s cubic-bezier(.02, .01, .47, 1);
+	-webkit-transition: opacity 1s cubic-bezier(.02, .01, .47, 1);
+}
+
+.infoElement {
+	z-index: 9980;
+	position: absolute;
+	padding-left: 10px;
+	padding-right: 10px;
+	padding-top: 5px;
+	text-align: center;
+	color: white;
+	background-color: rgba(0,0,0,0.8);
+}
+
+#channelDescription {
+	display: none;
+	left: 30px;
+	top: 20px;
+	font-size: 40px;
+	text-align: left;
+}
+
+#bufferingProgress {
+	display: none;
+	right: 30px;
+	top: 20px;
+	font-size: 30px;
+}
+
+#state {
+	display: none;
+	top: 480px;
+	left: 560px;
+	right: 560px;
+	font-size: 30px;
+}
+
+#timeProgress {
+	display: none;
+	top: 530px;
+	left: 540px;
+	right: 540px;
+	font-size: 24px;
+}
+
+#details {
+	display: none;
+	left: -510px;
+	top: 200px;
+	width: 480px;
+	padding: 10px;
+	border-style: solid;
+	border-width: 2px; 
+	border-color: white;
+	text-align: left;
+	word-wrap: break-word;
+	font-size: 21px;
+	transition: left 1s cubic-bezier(.02, .01, .47, 1);
+	-webkit-transition: left 1s cubic-bezier(.02, .01, .47, 1);
+}
+
+#debug {
+	display: none;
+	z-index: 9999;
+	top: -680px;
+	left: 30px;
+	width: 1200px;
+	max-height: 680px;
+	padding: 10px;
+	border-style: solid;
+	border-width: 2px; 
+	border-color: white;
+	text-align: left;
+	word-wrap: break-word;
+	overflow: hidden;
+	font-size: 16px;
+	transition: top 1s cubic-bezier(.02, .01, .47, 1);
+	-webkit-transition: top 1s cubic-bezier(.02, .01, .47, 1);
+}
+
+#textCheck {
+	display: none;
+	top: -1000px;
+	padding: 10px;
+	border-style: solid;
+	border-width: 2px; 
+	border-color: white;
+	font-size: 16px;
+}
+
+#subtitle {
+	display: none;
+	z-index: 9970;
+	position: absolute;
+	top: 580px;
+	left: 40px;
+	width: 1200px;
+    font-size: 36px;
+	color: white;
+    text-shadow: 3px 2px 4px #000000;
+    text-align: center;
+}

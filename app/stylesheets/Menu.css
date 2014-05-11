@@ -1,0 +1,65 @@
+#menu {
+	display: none;
+	z-index: 9990;
+	position: absolute;
+	top: 90px;
+	left: 30px;
+	max-width: 9999px;
+	max-height: 590px;
+	white-space: nowrap;
+	transition: left 1s cubic-bezier(.02, .01, .47, 1);
+	-webkit-transition: left 1s cubic-bezier(.02, .01, .47, 1);
+}
+
+.menu_element {
+	display: none;
+	float: left;
+	margin-right: 10px;
+	padding-top: 5px;
+	padding-left: 8px;
+	padding-right: 8px;
+	font-size: 30px;
+	border-style: solid;
+	border-width: 2px; 
+	border-color: white;
+	background-color: rgba(0,0,0,0.8);
+}
+
+.item {
+	font-size: 30px;
+	color: rgb(140,140,140);
+	white-space: nowrap;
+	overflow: hidden;
+}
+
+.item.selected {
+	color: white;
+	overflow: scroll;
+}
+
+#root {
+	max-width: 200px;
+}
+
+#direkte {
+	max-width: 490px;
+}
+
+#a_aa {
+	width: 40px;
+	padding-left: 0px;
+	padding-right: 0px;
+	text-align: center;
+}
+
+#shows {
+	max-width: 490px;
+}
+
+#seasons {
+	max-width: 180px;
+}
+
+#episodes {
+	max-width: 490px;
+}
