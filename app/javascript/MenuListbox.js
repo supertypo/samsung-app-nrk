@@ -12,9 +12,8 @@
 //	
 //	You should have received a copy of the GNU General Public License
 //	along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
 /** @constructor */
-function MenuListbox(id, texts) {
+function MenuListbox(menuBox, mediaElements) {
 
 	this.prev = function() {
 		this.move(this.index - 1);
@@ -44,8 +43,8 @@ function MenuListbox(id, texts) {
 		if(newVisibleFromIndex != this.visibleFromIndex) {
 			this.visibleFromIndex = this.index - (this.index % this.MAX_VISIBLE);
 			this.visibleToIndex = this.visibleFromIndex + this.MAX_VISIBLE;
-			if(this.visibleToIndex > this.texts.length) {
-				this.visibleToIndex = this.texts.length;
+			if(this.visibleToIndex > this.mediaElements.length) {
+				this.visibleToIndex = this.mediaElements.length;
 			}
 			this.draw();
 		} else {
@@ -54,9 +53,9 @@ function MenuListbox(id, texts) {
 	};
 	
 	this.draw = function() {
-		this.listBox.empty();
+		this.menuBox.empty();
 		for(var i=this.visibleFromIndex; i<this.visibleToIndex; i++) {
-			this.listBox.append("<div class=\"item\">" + this.texts[i] + "</div>");
+			this.menuBox.append(this.menuContent[i]);
 		}
 		this.selectItem();
 	};
@@ -67,21 +66,21 @@ function MenuListbox(id, texts) {
 			this.selectedItem.scrollLeft(0);
 			this.selectedItem.attr("class", "item");
 		}
-		this.selectedItem = this.listBox.find(".item:nth-child(" + ((this.index % this.MAX_VISIBLE) + 1) + ")");
+		this.selectedItem = this.menuContent[this.index];
 		this.selectedItem.attr("class", "item selected");
-		this.scrollItem(this.selectedItem);
+		var startScrollDelay = ((Background.CROSSFADE_INTERVAL_SECONDS + Background.getCrossFadeDuration()) * 1000) + 250;
+		setTimeout(function (menuListbox, item) { menuListbox.scrollItem(item); }, startScrollDelay, this, this.selectedItem);
 	};
 	
 	this.scrollItem = function(item) {
 		var scrollWidth = item[0].scrollWidth;
 		var width = item.width();
-		var startScrollDelay = ((Background.CROSSFADE_INTERVAL_SECONDS + Background.getCrossFadeDuration()) * 1000) + 250;
 		if(scrollWidth > width) {
 			clearTimeout(this.scrollItemTimer);
 			this.scrollItemTimer = setTimeout(function(menuListbox) {
 				var overflowWidth = scrollWidth - width;
 				menuListbox.scrollItemLeft(menuListbox, item, overflowWidth, menuListbox.calculateScrollDuration(overflowWidth));
-				}, startScrollDelay, this
+				}, 0, this
 			);
 		};
 	};
@@ -111,15 +110,22 @@ function MenuListbox(id, texts) {
 		return duration;
 	};
 	
-	this.MAX_VISIBLE = 15;
-	this.id = id;
-	this.texts = texts;
-	this.index=0;
-	this.endIndex = texts.length - 1;
+	this.createMenuContent = function() {
+		for (var i=0; i<this.mediaElements.length; i++) {
+			this.menuContent.push($("<div class='item'>" + this.mediaElements[i].title + "</div>"));
+		}
+	};
+	
+	this.MAX_VISIBLE = 16;
+	this.mediaElements = mediaElements;
+	this.menuContent = [];
+	this.index = 0;
+	this.endIndex = mediaElements.length - 1;
 	this.visibleFromIndex = -1;
 	this.visibleToIndex = -1;
 	this.selectedItem = null;
 	
-	this.listBox = $(this.id);
+	this.menuBox = menuBox;
+	this.createMenuContent();
 	this.updateVisibleIndexes();
 };

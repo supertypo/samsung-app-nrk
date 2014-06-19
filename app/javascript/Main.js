@@ -28,7 +28,7 @@ var Main = {
 };
 
 Main.getVersion = function() {
-	return "1.3.7";
+	return "1.4.0";
 };
 
 
@@ -37,13 +37,16 @@ Main.startApp = function() {
 	Player.init();
 	window["onShow"] = KeyHandler.register;
 	KeyHandler.register();
+	Background.init();
 	MenuManager.init();
 	Main.logModelAndFirmware();
 	widgetAPI.sendReadyEvent();
 	Update.check();
+	MediaElementCache.load();
 };
 
 Main.stopApp = function() {
+	MediaElementCache.save();
 	pluginPlayer.Stop();
 };
 

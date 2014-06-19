@@ -25,7 +25,6 @@ var MenuManager = {
 	playbackMenu : null,
 	menuVisible : true,
 	currentDepth : 0,
-	currentShowName : null,
 	currentTop : 0,
 	currentLeft : 0
 };
@@ -61,17 +60,13 @@ MenuManager.screenSaver = function() {
 
 MenuManager.init = function() {
 	MenuManager.screenSaver();
-	Background.init();
 	TimeAndDate.showWallClock();
-	Graphics.showDescription(MenuManager.MENU_DESCRIPTION, MenuManager.INFO_TIMEOUT_SECONDS);
 	MenuManager.showMenu();
-	MenuManager.selectedMenu = new Menu(MenuConst.ID_ROOT);
-	MenuManager.selectedMenu.parentMenu = MenuManager.selectedMenu;
+	MenuManager.selectedMenu = MenuConst.getRootMenu();
 	MenuManager.currentTop = $(MenuManager.ID_MENU).offset()["top"];
 	MenuManager.currentLeft = $(MenuManager.ID_MENU).offset()["left"];
-	Logger.log("Saved " + MenuManager.ID_MENU + " left offset as: " + MenuManager.currentLeft);
+	Logger.log("Saved " + MenuManager.ID_MENU + " top: " + MenuManager.currentTop + ", left: " + MenuManager.currentLeft);
 };
-
 
 MenuManager.prevChannel = function() {
 	if (MenuManager.menuVisible) {
@@ -90,7 +85,6 @@ MenuManager.nextChannel = function() {
 MenuManager.keyUp = function() {
 	if (MenuManager.menuVisible) {
 		MenuManager.selectedMenu.prev();
-		Background.change(MenuManager.selectedMenu);
 		MenuManager.hasMoved = true;
 	} else {
 		Player.jumpForward(600);
@@ -100,7 +94,6 @@ MenuManager.keyUp = function() {
 MenuManager.keyDown = function() {
 	if (MenuManager.menuVisible) {
 		MenuManager.selectedMenu.next();
-		Background.change(MenuManager.selectedMenu);
 		MenuManager.hasMoved = true;
 	} else {
 		Player.jumpBackward(600);
@@ -111,9 +104,8 @@ MenuManager.keyLeft = function() {
 	if (MenuManager.menuVisible) {
 		if (MenuManager.selectedMenu.parentMenu != MenuManager.selectedMenu) {
 			MenuManager.selectedMenu.hide();
-			MenuManager.selectedMenu.clear();
 			MenuManager.selectedMenu = MenuManager.selectedMenu.parentMenu;
-			Background.change(MenuManager.selectedMenu);
+			MenuManager.selectedMenu.show();
 			MenuManager.moveMenuRight();
 			MenuManager.hasMoved = true;
 		}
@@ -133,18 +125,24 @@ MenuManager.keyRight = function() {
 MenuManager.keyEnter = function() {
 	if (MenuManager.menuVisible) {
 		if (MenuManager.selectedMenu.clickable) {
-			var selectedValue = MenuManager.selectedMenu.getSelectedValue();
-			if (selectedValue instanceof Menu) {
-				MenuManager.selectedMenu = selectedValue;
-				MenuManager.moveMenuLeft();
-			} else if (selectedValue["name"] == MenuManager.currentShowName && Player.state != Player.STOPPED) {
-				MenuManager.keyReturn();
-			} else {
-				MenuManager.hasMoved = false;
-				MenuManager.currentShowName = selectedValue["name"];
-				Graphics.showDescription(MenuManager.currentShowName, MenuManager.INFO_TIMEOUT_SECONDS);
-				WebParser.parseAndPlay(selectedValue["url"]);
-			}
+			MenuManager.selectedMenu.open(function (selectedValue) {
+				if (selectedValue) {
+					if (selectedValue instanceof Menu) {
+						MenuManager.selectedMenu = selectedValue;
+						MenuManager.moveMenuLeft();
+					} else {
+						if (selectedValue.title == Player.getCurrentTitle() && Player.state != Player.STOPPED) {
+							MenuManager.keyReturn();
+						} else if (selectedValue.mediaUrl) {
+							MenuManager.hasMoved = false;
+							Player.play(selectedValue);
+							Graphics.showDescription(MenuManager.INFO_TIMEOUT_SECONDS);
+						} else {
+							Logger.log("No mediaUrl supplied: " + selectedValue);
+						}
+					}
+				}
+			});
 		}
 	} else {
 		MenuManager.keyReturn();
@@ -171,13 +169,8 @@ MenuManager.moveMenuLeft = function() {
 		}
 		MenuManager.currentLeft -= moveMenu.width;
 		Logger.log("Moving " + MenuManager.ID_MENU + ", left: " + MenuManager.currentLeft);
-		$(MenuManager.ID_MENU).stop();
-		MenuManager.checkAndMove();
+		$(MenuManager.ID_MENU).css("left", MenuManager.currentLeft);
 	}
-};
-
-MenuManager.checkAndMove = function() {
-	$(MenuManager.ID_MENU).css("left", MenuManager.currentLeft);
 };
 
 MenuManager.moveMenuRight = function() {
@@ -189,23 +182,18 @@ MenuManager.moveMenuRight = function() {
 		}
 		MenuManager.currentLeft += moveMenu.width;
 		Logger.log("Moving " + MenuManager.ID_MENU + ", left: " + MenuManager.currentLeft);
-		$(MenuManager.ID_MENU).stop();
-		MenuManager.checkAndMove();
+		$(MenuManager.ID_MENU).css("left", MenuManager.currentLeft);
 	}
 };
 
 MenuManager.playbackComplete = function() {
+	Player.stopVideo();
 	var selectedMenu = MenuManager.selectedMenu;
-	if (!MenuManager.hasMoved && selectedMenu.id == MenuConst.ID_EPISODES && selectedMenu.getIndex() > 0) {
+	if (!MenuManager.hasMoved && selectedMenu.getIndex() > 0 
+			&& selectedMenu.parentMenu.getSelectedMediaElement().type == MediaElementType.SEASON) {
 		Logger.log("Autoplaying next episode");
-		Player.stopPlayback();
-		selectedMenu.prev();
-		var selectedValue = selectedMenu.getSelectedValue();
-		MenuManager.currentShowName = selectedValue["name"];
-		Graphics.showDescription(MenuManager.currentShowName, MenuManager.INFO_TIMEOUT_SECONDS);
-		WebParser.parseAndPlay(selectedValue["url"]);
-	} else {
-		Player.stopVideo();
+		MenuManager.keyUp();
+		MenuManager.keyEnter();
 	}
 };
 
@@ -217,4 +205,5 @@ MenuManager.showMenu = function() {
 MenuManager.hideMenu = function() {
 	$(MenuManager.ID_MENU).hide();
 	MenuManager.menuVisible = false;
+	Graphics.stopEpgUpdate();
 };

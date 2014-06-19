@@ -34,7 +34,10 @@ Logger.log = function(message) {
 		message = "null";
 	}
 	proxiedAlert(message);
-	Logger.splitAndAdd(message);
+	messageArray = message.split("\n");
+	for (var i=0; i<messageArray.length; i++) {
+		Logger.splitAndAdd(messageArray[i]);
+	}
 };
 
 Logger.splitAndAdd = function(message) {

@@ -12,29 +12,10 @@
 //	
 //	You should have received a copy of the GNU General Public License
 //	along with this program.  If not, see <http://www.gnu.org/licenses/>.
-var MenuCache = {
-		cache : {}
-};
-
-MenuCache.cacheMenu = function(id, menu) {
-	MenuCache.cache[id] = menu;
-};
-
-MenuCache.getMenu = function(id) {
-	if (id in MenuCache.cache) {
-		var menu = MenuCache.cache[id];
-		if (menu.timestamp + (Config.MENU_CACHE_TIMEOUT_MINUTES * 60 * 1000) < new Date().getTime()) {
-			Logger.log("Cached menu is expired, older than " + Config.MENU_CACHE_TIMEOUT_MINUTES + " minutes");
-			MenuCache.cache[id] = null;
-			return null;
-		}
-		return menu;
-	} else {
-		return null;
-	}
-};
-
-MenuCache.clear = function() {
-	MenuCache.cache = {};
-	Logger.log("MenuCache cleared");
+var Config = {
+		WEB_URL: "http://tv.nrk.no/",
+		RADIO_WEB_URL: "http://radio.nrk.no/",
+		API_URL: "http://v7.psapi.nrk.no/",
+		MENU_CACHE_TIMEOUT_MINUTES: 30,
+		MEDIA_CACHE_TIMEOUT_HOURS: 168
 };

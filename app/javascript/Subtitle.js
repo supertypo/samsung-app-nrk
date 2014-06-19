@@ -19,16 +19,19 @@ var Subtitle = {
 		subs : [],
 		currentSub : null,
 		currentSubExpire : 0,
-		currentTime : 0,
 		enabled : true,
 		timing : 0
 };
 
-Subtitle.init = function() {
+Subtitle.unload = function() {
+	Subtitle.file = null;
 	Subtitle.subs = [];
+	Subtitle.reset();
+};
+
+Subtitle.reset = function() {
 	Subtitle.currentSub = null;
 	Subtitle.currentSubExpire = 0;
-	Subtitle.currentTime = 0;
 	Subtitle.hide();
 };
 
@@ -85,18 +88,24 @@ Subtitle.hide = function() {
 };
 
 Subtitle.loadFile = function(url) {
-	$.ajax({
-		url: url,
-		dataType: "html",
-		success: function(content) {
-			Logger.log("Loaded subtitle from '" + url + "', length: " + content.length);
-			Subtitle.file = content;
-		},
-		error: function(jqXHR, textStatus, errorThrown) {
-			Logger.log("Loading of subtitle '" + url + "' failed, error is: '" + textStatus + "' - '" + errorThrown + "'");
-			Subtitle.file = null;
-		}
-	});
+	Subtitle.unload();
+	if (url) {
+		url = Config.API_URL + url;
+		$.ajax({
+			url: url,
+			dataType: "html",
+			success: function(content) {
+				Logger.log("Subtitles loaded from '" + url + "', length: " + content.length);
+				Subtitle.file = content;
+				Subtitle.loadSubs();
+			},
+			error: function(jqXHR, textStatus, errorThrown) {
+				Logger.log("Loading of subtitles '" + url + "' failed, error is: '" + textStatus + "' - '" + errorThrown + "'");
+			}
+		});
+	} else {
+		Logger.log("No subtitles available");
+	}
 };
 
 Subtitle.loadSubs = function() {
@@ -112,9 +121,6 @@ Subtitle.loadSubs = function() {
 
 Subtitle.findAndDisplay = function(currentTimeMillis) {
 	if(Subtitle.file != null && Subtitle.enabled) {
-		if(Subtitle.subs.length == 0) {
-			Subtitle.loadSubs();
-		}
 		if(currentTimeMillis > Subtitle.currentSubExpire) {
 			Subtitle.currentSub = null;
 			Subtitle.find(currentTimeMillis);

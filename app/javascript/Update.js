@@ -72,7 +72,7 @@ Update.showInfo = function(genInfo, newVer, minVer, minVerReason) {
 	}
 	setTimeout(function() {
 		Update.showMaintainerInfo(html, displaySeconds);
-	}, 1000);
+	}, 2000);
 };
 
 Update.isHigherVersionThanInUse = function(version) {

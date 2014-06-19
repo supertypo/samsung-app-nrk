@@ -19,7 +19,7 @@ var Player = {
 	PLAYING: 1,
 	PAUSED: 2,
 	state: 0,
-	currentUrl: null,
+	mediaElement: null,
 	playerParams: "|STARTBITRATE=1500000|COMPONENT=HLS",
 	oldPlayerParams: "|STARTTIME=02:55:00|STARTBITRATE=1500000|COMPONENT=HLS"
 };
@@ -29,15 +29,18 @@ Player.init = function() {
 	PlayerEventHandler.register();
 };
 
-Player.changeChannel = function(url) {
-	if(url == Player.currentUrl) {
+Player.play = function(mediaElement) {
+	if(Player.mediaElement && mediaElement.id == Player.mediaElement.id) {
 		PlayerEventHandler.progressSeconds = PlayerEventHandler.currentSeconds;
 		PlayerEventHandler.autoJump = true;
+	} else {
+		PlayerEventHandler.autoJump = false;
 	}
 	if(Player.state != Player.STOPPED) {
 		Player.stopPlayback();
 	}
-	Player.currentUrl = url;
+	Subtitle.loadFile(mediaElement.subtitlesUrl);
+	Player.mediaElement = mediaElement;
 	Player.playVideo();
 };
 
@@ -72,26 +75,27 @@ Player.playVideo = function() {
 };
 
 Player.startPlayback = function() {
-	if(Player.currentUrl != null) { 
+	if(Player.mediaElement && Player.mediaElement.mediaUrl) {
+		var mediaUrl = Player.mediaElement.mediaUrl;
 		Player.state = Player.PLAYING;
 		if(Main.isModernFirmware()) {
-			Logger.log("Starting playback of: " + Player.currentUrl + Player.playerParams);
-			pluginPlayer.InitPlayer(Player.currentUrl + Player.playerParams);
+			Logger.log("Starting playback of: " + mediaUrl + Player.playerParams);
+//			PlayerEventHandler.OnBufferingComplete(); // TESTING WITHOUT PLAYBACK
+			pluginPlayer.InitPlayer(mediaUrl + Player.playerParams);
 			Player.setBufferSizes();
 			pluginPlayer.StartPlayback();
 		} else {
-			Logger.log("Starting playback of: " + Player.currentUrl + Player.oldPlayerParams);
-			pluginPlayer.Play(Player.currentUrl + Player.oldPlayerParams);
+			Logger.log("Starting playback of: " + mediaUrl + Player.oldPlayerParams);
+			pluginPlayer.Play(mediaUrl + Player.oldPlayerParams);
 		}
-		Subtitle.init();
+		Subtitle.reset();
 		Main.disableScreenSaver();
 	}
 };
 
 Player.stopVideo = function() {
 	Player.stopPlayback();
-	Graphics.showDescription(MenuManager.MENU_DESCRIPTION, MenuManager.INFO_TIMEOUT_SECONDS);
-	Graphics.hidePlayerStateAndProgress();
+	Graphics.hidePlayerInfo();
 	Graphics.hideBuffer();
 	Background.show();
 	MenuManager.showMenu();
@@ -102,22 +106,22 @@ Player.stopPlayback = function() {
 	Player.state = Player.STOPPED;
 	pluginPlayer.Stop();
 	Main.enableScreenSaver();
-	Subtitle.hide();
+	Subtitle.reset();
 };
 
 Player.jumpForward = function(seconds) {
 	if (Player.state != Player.STOPPED) {
-		Subtitle.init();
 		Graphics.showPlayerInfo("+" + Player.prettyfyJump(seconds));
 		pluginPlayer.JumpForward(seconds);
+		Subtitle.reset();
 	}
 };
 
 Player.jumpBackward = function(seconds) {
 	if (Player.state != Player.STOPPED) {
-		Subtitle.init();
 		Graphics.showPlayerInfo("-" + Player.prettyfyJump(seconds));
 		pluginPlayer.JumpBackward(seconds);
+		Subtitle.reset();
 	}
 };
 
@@ -171,4 +175,8 @@ Player.getCurrentBitrateKbps = function() {
 		return Math.round((current / 1000));
 	} 
 	return 0;
+};
+
+Player.getCurrentTitle = function() {
+	return Player.mediaElement ? Player.mediaElement.title : null;
 };

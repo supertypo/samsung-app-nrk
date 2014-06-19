@@ -13,22 +13,24 @@
 //	You should have received a copy of the GNU General Public License
 //	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 var Keyboard = {
-	KEYBOARD_ID : "#keyboard",
-	INPUT_ID : "#keyboard input",
-	ROWS : 4,
-	COLUMNS : 11,
-	menu : null,
-	selectedButton : null,
+	KEYBOARD_ID: "#keyboard",
+	INPUT_ID: "#keyboard input",
+	ROWS: 4,
+	COLUMNS: 11,
+	menu: null,
+	mediaElement: null,
+	selectedButton: null,
 	keyboard: null,
 	input: null,
-	x : 6,
-	y : 3
+	x: 6,
+	y: 3
 };
 
-Keyboard.search = function(menu) {
-	Keyboard.show();
+Keyboard.search = function(menu, mediaElement) {
 	Keyboard.menu = menu;
+	Keyboard.mediaElement = mediaElement;
 	Keyboard.menu.hide();
+	Keyboard.show();
 };
 
 Keyboard.show = function() {
@@ -48,7 +50,7 @@ Keyboard.onOk = function() {
 	Keyboard.hide();
 	if(Keyboard.input.val() != "") {
 		Keyboard.menu.show();
-		Search.search(Keyboard.input.val(), Keyboard.menu);
+		WebParserNg.search(Keyboard.menu, Keyboard.mediaElement, Keyboard.input.val());
 	} else {
 		MenuManager.keyLeft();
 	}

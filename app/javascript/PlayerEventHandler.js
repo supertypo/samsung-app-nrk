@@ -90,7 +90,6 @@ PlayerEventHandler.restartPlayback = function() {
 		PlayerEventHandler.retryCount++;
 		if(PlayerEventHandler.retryCount <= PlayerEventHandler.MAX_RETRIES) {
 			Logger.log("Restarting playback, attempt " + PlayerEventHandler.retryCount + "/" + PlayerEventHandler.MAX_RETRIES);
-			Graphics.showDescription("Mistet forbindelsen, prøver på nytt...");
 			PlayerEventHandler.progressSeconds = PlayerEventHandler.currentSeconds;
 			PlayerEventHandler.autoJump = true;
 			Player.stopPlayback();
@@ -130,11 +129,11 @@ PlayerEventHandler.OnBufferingComplete = function() {
 	Graphics.hideBuffer();
 	PlayerEventHandler.retryCount = 0;
 	PlayerEventHandler.jumpToPreviousLocation();
-	Graphics.showPlayerInfo(Player.getStateDescription(), MenuManager.currentShowName);
+	Graphics.showPlayerInfo(Player.getStateDescription());
 };
 
 PlayerEventHandler.OnCurrentPlayTime = function(millis) {
-	if(PlayerEventHandler.currentSeconds == 0 && millis != 0) {
+	if(PlayerEventHandler.currentSeconds == 0 && millis > 1000) {
 		Logger.log("Got first OnCurrentPlayTime event, millis = " + millis);
 	}
 	PlayerEventHandler.updateProgress(millis);

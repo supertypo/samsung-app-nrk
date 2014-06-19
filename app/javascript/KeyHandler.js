@@ -90,6 +90,9 @@ KeyHandler.keyDown = function() {
     case tvKey["KEY_7"]:
     	if (kh.getKey(-1) == tvKey["KEY_3"]) {
     		Graphics.displayDebugToggle();
+    	} else if (kh.getKey(-1) == tvKey["KEY_4"] && kh.getKey(-2) == tvKey["KEY_1"]) {
+    		MenuCache.clear();
+    		MediaElementCache.clear();
     	}
         break;
         

@@ -17,6 +17,7 @@
 		<script type="text/javascript" src="$MANAGER_WIDGET/Common/API/TVKeyValue.js"></script>
 		<script type="text/javascript" src="$MANAGER_WIDGET/Common/API/Plugin.js"></script>
 		
+		<script type="text/javascript" src="app/javascript/Config.js"></script>
 		<script type="text/javascript" src="app/javascript/Logger.js"></script>
 		<script type="text/javascript" src="app/javascript/Update.js"></script>
 		<script type="text/javascript" src="app/javascript/Main.js"></script>
@@ -25,7 +26,11 @@
 		<script type="text/javascript" src="app/javascript/Menu.js"></script>
 		<script type="text/javascript" src="app/javascript/MenuCache.js"></script>
 		<script type="text/javascript" src="app/javascript/MenuListbox.js"></script>
-		<script type="text/javascript" src="app/javascript/WebParser.js"></script>
+		<script type="text/javascript" src="app/javascript/WebParserNg.js"></script>
+		<script type="text/javascript" src="app/javascript/ServiceClient.js"></script>
+		<script type="text/javascript" src="app/javascript/MediaElement.js"></script>
+		<script type="text/javascript" src="app/javascript/MediaElementClient.js"></script>
+		<script type="text/javascript" src="app/javascript/MediaElementCache.js"></script>
 		<script type="text/javascript" src="app/javascript/Subtitle.js"></script>
 		<script type="text/javascript" src="app/javascript/Player.js"></script>
 		<script type="text/javascript" src="app/javascript/KeyHandler.js"></script>
@@ -34,7 +39,6 @@
 		<script type="text/javascript" src="app/javascript/PlayerEventHandler.js"></script>
 		<script type="text/javascript" src="app/javascript/Keyboard.js"></script>
 		<script type="text/javascript" src="app/javascript/KeyboardHandler.js"></script>
-		<script type="text/javascript" src="app/javascript/Search.js"></script>
 	</head>
 
 	<body onload="Main.startApp();" onunload="Main.stopApp();">
@@ -53,12 +57,7 @@
 		<div id="debug" class="infoElement"></div>
 		<div id="textCheck" class="infoElement"></div>
 		<div id="menu">
-			<span id="root" class="menu_element"></span>
-			<span id="direkte" class="menu_element"></span>
-			<span id="a_aa" class="menu_element"></span>
-			<span id="shows" class="menu_element"></span>
-			<span id="seasons" class="menu_element"></span>
-			<span id="episodes" class="menu_element"></span>
+			<div id="epg"></div>
 			<div id="keyboard">
 				<input type="text" maxlength="30"/><span id="title">Søk</span>
 				<div class="row">

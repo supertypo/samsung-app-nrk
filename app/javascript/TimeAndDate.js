@@ -49,7 +49,9 @@ TimeAndDate.getWallclockTime = function() {
 	var day = TimeAndDate.leadingZero(date.getDate());
 	var month = TimeAndDate.leadingZero(date.getMonth() + 1);
 	var year = date.getFullYear().toString().substring(2);
-	var h = TimeAndDate.leadingZero(date.getHours());
+	//FIXME: handle this properly, tv is buggy
+	date.setUTCHours(date.getUTCHours() + 2);
+	var h = TimeAndDate.leadingZero(date.getUTCHours());
 	var m = TimeAndDate.leadingZero(date.getMinutes());
 	var s = TimeAndDate.leadingZero(date.getSeconds());
 	return day + "." + month + "." + year + " " + h + ":" + m + ":" + s;
@@ -71,4 +73,14 @@ TimeAndDate.prettyTime = function(seconds) {
 		return h + ":" + m + ":" + s;
 	}
 	return "--:--:--";
+};
+
+TimeAndDate.hoursMinutes = function(millis) {
+	var date = new Date(millis);
+	//FIXME: handle this properly, tv is buggy
+	date.setUTCHours(date.getUTCHours() + 2);
+	var h = TimeAndDate.leadingZero(date.getUTCHours());
+	date.setMinutes(date.getMinutes() + Math.floor(date.getSeconds() / 60));
+	var m = TimeAndDate.leadingZero(date.getMinutes());
+	return h + ":" + m;
 };

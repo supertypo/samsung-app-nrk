@@ -13,215 +13,118 @@
 //	You should have received a copy of the GNU General Public License
 //	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 var MenuConst = {
-		ID_ROOT : "#root",
-		ID_DIREKTE : "#direkte",
-		ID_A_AA : "#a_aa",
-		ID_SHOWS : "#shows",
-		ID_SEASONS : "#seasons",
-		ID_EPISODES : "#episodes",
+		id: 0
+};
+
+MenuConst.getRootMenu = function() {
+	var menu = new Menu(null, new MediaElement(null, MediaElementType.ROOT));
+	menu.parentMenu = menu;
+	return menu;
 };
 
 /** @constructor */
-function Menu(id, parentMenu) {
-	this.id = id;
-	this.parentMenu = parentMenu;
-	this.listbox = null;
-	this.clickable = false;
-	this.width = 0;
-	this.names = null;
-	this.urls = null;
+function Menu(parentMenu, mediaElement) {
 	
-	this.setItems = function(names, urls) {
-		Logger.log("Retrieved items for: " + this.id);
-		this.clear();
-		this.names = names;
-		this.urls = urls;
-		this.createListBox();
-		this.width = $(this.id).outerWidth(true);
-		Background.change(this);
-	};
-	
-	this.createListBox = function() {
-		this.listbox = new MenuListbox(this.id, this.names);
-	};
-	
-	this.clear = function() {
-		$(this.id).empty();
+	this.setMediaElements = function(mediaElements) {
+		this.mediaElements = mediaElements;
+		if (this.mediaElements.length > 0) {
+			this.timestamp = new Date().getTime();
+			this.clickable = true;
+			this.loadingBox.remove();
+			this.listbox = new MenuListbox(this.menuBox, this.mediaElements);
+			this.updateInfo();
+		} else {
+			this.loadingBox.text("Ingen elementer funnet");
+		}
 	};
 	
 	this.show = function() {
-		$(this.id).show();
+		this.menuBox.show();
+		this.updateInfo();
 	};
 	
 	this.hide = function() {
-		$(this.id).hide();
+		this.menuBox.hide();
 	};
 	
 	this.prev = function() {
 		this.listbox.prev();
+		this.updateInfo();
 	};
 	
 	this.next = function() {
 		this.listbox.next();
+		this.updateInfo();
 	};
 	
-	this.getSelectedName = function() {
-		return this.names[this.getIndex()];
-	};
-	
-	this.getSelectedUrl = function() {
-		if(this.urls != null) {
-			return this.urls[this.getIndex()];
-		} else {
-			return null;
+	this.updateInfo = function() {
+		if (this.mediaElements) {
+			clearTimeout(this.updateInfoTimeout);
+			this.updateInfoTimeout = setTimeout(function(enrich, mediaElement) {
+				enrich(mediaElement, false, function(enrichedMediaElement) {
+					Graphics.displayEpg(enrichedMediaElement);
+					Background.change(enrichedMediaElement.imageUrl);
+				});
+			}, 250, this.enrich, this.getSelectedMediaElement());
 		}
 	};
 	
-	this.getUrl = function(index) {
-		return this.urls[index];
+	this.enrich = function(mediaElement, forceReload, callback) {
+		if (mediaElement.id) {
+			MediaElementClient.lookupMediaElement(mediaElement.id, forceReload, callback);
+		} else {
+			callback(mediaElement);
+		}
 	};
 	
+	this.getSelectedMediaElement = function() {
+		return this.mediaElements[this.getIndex()];
+	};
+	
+	this.getSelectedTitle = function() {
+		return this.getSelectedMediaElement().title;
+	};
+	
+	this.open = function(callback) {
+		this.width = this.menuBox.outerWidth(true);
+		var mediaElement = this.getSelectedMediaElement();
+		if (mediaElement.type) {
+			if (mediaElement.id) {
+				this.enrich(mediaElement, true, callback);
+			} else {
+				callback(this.openMenu(mediaElement));
+			}
+		} else {
+			callback(null);
+		}
+	};
+	
+	this.openMenu = function(mediaElement) {
+		var name = this.id + ":" + this.getSelectedTitle();
+		var menu = MenuCache.getMenu(name);
+		if (menu) {
+			menu.show();
+		} else {
+			menu = new Menu(this, mediaElement);
+			MenuCache.cacheMenu(name, menu);
+		}
+		return menu;
+	};
+
 	this.getIndex = function() {
 		return this.listbox.getIndex();
 	};
 	
-	this.returnMenu = function(id) {
-		var name = this.parentMenu.getSelectedName() + "_" + this.getSelectedName();
-		var cachedMenu = MenuCache.getMenu(name);
-		if (cachedMenu != null && cachedMenu.clickable && name != "Søk_Søk") {
-			Logger.log("Using cached menu \"" + name + "\" for " + id);
-			cachedMenu.show();
-			cachedMenu.listbox.draw();
-			Background.change(cachedMenu);
-			return cachedMenu;
-		} else {
-			Logger.log("Creating new menu \"" + name + "\" for " + id);
-			var newMenu = new Menu(id, this);
-			MenuCache.cacheMenu(name, newMenu);
-			return newMenu;
-		}
-	};
-	
-	this.getSelectedValue = function() {
-		var selectedName = this.getSelectedName();
-		switch (this.id) {
-		case MenuConst.ID_ROOT:
-			switch (selectedName) {
-			case "Direkte":
-				return this.returnMenu(MenuConst.ID_DIREKTE, this);
-			case "Radio":
-				return this.returnMenu(MenuConst.ID_DIREKTE, this);
-			case "Nytt":
-				return this.returnMenu(MenuConst.ID_SHOWS, this);
-			case "Populært":
-				return this.returnMenu(MenuConst.ID_SHOWS, this);
-			case "Anbefalt":
-				return this.returnMenu(MenuConst.ID_SHOWS, this);
-			case "Søk":
-				return this.returnMenu(MenuConst.ID_SHOWS, this);
-			default:
-				return this.returnMenu(MenuConst.ID_A_AA, this);
-			}
-			break;
-		case MenuConst.ID_DIREKTE:
-			return {"name": selectedName, "url": this.getSelectedUrl()};
-			break;
-		case MenuConst.ID_A_AA:
-			return this.returnMenu(MenuConst.ID_SHOWS, this);
-			break;
-		case MenuConst.ID_SHOWS:
-			if ((this.parentMenu.id == MenuConst.ID_ROOT && this.parentMenu.getSelectedName() != "Søk") 
-					|| this.getSelectedUrl().indexOf("/serie/") != 0) {
-				return {"name": selectedName, "url": this.getSelectedUrl()};
-			} else {
-				return this.returnMenu(MenuConst.ID_SEASONS, this);
-			}
-			break;
-		case MenuConst.ID_SEASONS:
-			return this.returnMenu(MenuConst.ID_EPISODES, this);
-			break;
-		case MenuConst.ID_EPISODES:
-			return {"name": selectedName, "url": this.getSelectedUrl()};
-			break;
-		default:
-			Logger.log("Menu.getSelectedValue(): Unknown menu");
-		}
-	};
-	
-	this.show();
-	this.listbox = new MenuListbox(this.id, ["Laster..."]);
+	this.id = "menu" + MenuConst.id++;
+	this.parentMenu = parentMenu;
+	this.timestamp = 0;
 
-	switch(this.id) {
-	case MenuConst.ID_ROOT:
-		this.clickable = true;
-		this.setItems(["Direkte", "Radio", "Nytt", "Populært", "Anbefalt", "Barn", "Dokumentarer", "Filmer/serier", "Nyheter", "Sport", "Alle", "Søk"]);
-		break;
-	case MenuConst.ID_DIREKTE:
-		this.clickable = true;
-		if(this.parentMenu.getSelectedName() == "Radio") {
-			this.setItems(
-					["NRK P1", "NRK P2", "NRK P3", "NRK P13"], 
-					["http://radio.nrk.no/direkte/p1_oslo_akershus", "http://radio.nrk.no/direkte/p2", 
-					 "http://radio.nrk.no/direkte/p3", "http://radio.nrk.no/direkte/p13"]);
-		} else {
-			this.setItems(
-					["NRK1", "NRK2", "NRK3/Super"], 
-					["/direkte/nrk1", "/direkte/nrk2", "/direkte/nrk3"]);
-		}
-		break;
-	case MenuConst.ID_A_AA:
-		this.clickable = true;
-		this.setItems(["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N",
-		              "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "Æ", "Ø", "Å", "-"]);
-		break;
-	case MenuConst.ID_SHOWS:
-		var letter = this.parentMenu.getSelectedName();
-		if(letter == "-") {
-			letter = "0-9";
-		}
-		switch (this.parentMenu.parentMenu.getSelectedName()) {
-			case "Nytt":
-				WebParser.getNewShows(this);
-				break;
-			case "Populært":
-				WebParser.getPopularShows(this);
-				break;
-			case "Anbefalt":
-				WebParser.getRecommendedShows(this);
-				break;
-			case "Alle":
-				WebParser.getAllShowsForLetter(letter, this);
-				break;
-			case "Barn":
-				WebParser.getChildrenShowsForLetter(letter, this);
-				break;
-			case "Dokumentarer":
-				WebParser.getDocumentaryShowsForLetter(letter, this);
-				break;
-			case "Filmer/serier":
-				WebParser.getMoviesAndSeriesForLetter(letter, this);
-				break;
-			case "Nyheter":
-				WebParser.getNewsForLetter(letter, this);
-				break;
-			case "Sport":
-				WebParser.getSportShowsForLetter(letter, this);
-				break;
-			case "Søk":
-				Keyboard.search(this);
-				break;
-			default:
-				Logger.log("Menu: Unknown option: " + this.parentMenu.parentMenu.getSelectedName());
-		}
-		break;
-	case MenuConst.ID_SEASONS:
-		WebParser.getSeasonsForShow(this.parentMenu.getSelectedUrl(), this);
-		break;
-	case MenuConst.ID_EPISODES:
-		WebParser.getEpisodesForSeason(this.parentMenu.getSelectedUrl(), this);
-		break;
-	default:
-		Logger.log("Menu.constructor(): Unknown menu");
-	}
+	this.menuBox = $("<span id='" + this.id + "' class='menu_element'></span>");
+	$("#menu").append(this.menuBox);
+	this.loadingBox = $("<div class='item selected'>Laster...</div>");
+	this.menuBox.append(this.loadingBox);
+	this.menuBox.show();
+	
+	WebParserNg.getMediaElements(this, mediaElement);
 };
 

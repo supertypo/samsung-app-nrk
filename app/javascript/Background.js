@@ -44,19 +44,8 @@ Background.hide = function() {
 	$(Background.BG_ID_PREFIX + (Background.bgCounter % 2)).hide();
 };
 
-Background.change = function(menu) {
-//	if(Main.isModernFirmware()) {
-		if(menu.id == MenuConst.ID_SHOWS) {
-			Background.showImageForShow(menu);
-		} else if(menu.id != MenuConst.ID_SEASONS && menu.id != MenuConst.ID_EPISODES) {
-			Background.showGenericImage();
-		}
-//	}
-};
-
-Background.showImageForShow = function(menu) {
-	if(menu.getSelectedUrl() != null) {
-		var url = Background.getUrl(menu);
+Background.change = function(url) {
+	if(url) {
 		Background.delayedCrossfade(url);
 	} else {
 		Background.showGenericImage();
@@ -66,15 +55,6 @@ Background.showImageForShow = function(menu) {
 Background.showGenericImage = function() {
 	if(Background.currentBackground != Background.DEFAULT_IMAGE) {
 		Background.delayedCrossfade(Background.DEFAULT_IMAGE);
-	}
-};
-
-Background.getUrl = function(menu) {
-	var url = menu.getSelectedUrl();
-	if(menu.parentMenu.id == MenuConst.ID_ROOT) {
-		return Background.THUMB_URL_PREFIX + url.split("/")[2];
-	} else {
-		return Background.THUMB_URL_PREFIX + url.split("/").last().split("?")[0];
 	}
 };
 

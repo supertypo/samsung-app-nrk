@@ -18,6 +18,7 @@ var Graphics = {
 		DEBUG_TIMEOUT_SECONDS : 600,
 		BUFFER_TIMEOUT_SECONDS : 2,
 		DISPLAY_FADEOUT_SECONDS : 1,
+		EPG_REFRESH_SECONDS : 30,
 		timeoutMap : {},
 		detailsEnabled : false,
 		debugEnabled : false,
@@ -25,28 +26,134 @@ var Graphics = {
 		progressEnabled : false,
 		descriptionId : "#channelDescription",
 		detailsId : "#details",
+		epgId : "#epg", 
+		epgChannel: null,
 		debugId : "#debug",
 		playerStateId : "#state",
 		bufferId : "#bufferingProgress",
 		progressId : "#timeProgress",
 };
 
-Graphics.getDescription = function() {
-	return $(Graphics.descriptionId).html();
+Graphics.displayEpg = function(mediaElement) {
+	if (mediaElement.id && mediaElement.type == MediaElementType.LIVE) {
+		Graphics.updateEpg(mediaElement.id, mediaElement.title);
+	} else if (MenuManager.currentDepth < 2 && mediaElement.description) {
+		Graphics.updateProgramDescription(mediaElement);
+	} else {
+		Graphics.hideEpg();
+	}
 };
 
-Graphics.showDescription = function(description, timeoutSeconds) {
-	if(description) {
-		$(Graphics.descriptionId).html(description);
+Graphics.updateProgramDescription = function(mediaElement) {
+	var html = "<div class='epgHeader'>" + mediaElement.title + "</div>";
+	html += "<div>" + mediaElement.description + "</div>";
+	html = "<div class='epgSub'>" + html + "</div>";
+	$(Graphics.epgId).html(html);
+	Graphics.showEpg();
+};
+
+Graphics.updateEpg = function(id, title) {
+	Graphics.delayedAction(Graphics.epgId, function() { Graphics.updateEpg(id, title); }, Graphics.EPG_REFRESH_SECONDS);
+	setTimeout(function() {
+		var epgDataArray = ServiceClient.getEpgData(id);
+		var html = ""; 
+		html += Graphics.createProgramlist(title, epgDataArray);
+		html += Graphics.createProgramInfo(epgDataArray);
+		$(Graphics.epgId).html(html);
+		Graphics.showEpg();
+	}, 0);
+};
+
+Graphics.createProgramlist = function(channel, epgDataArray) {
+	var html = "<div class='epgHeader'>Programoversikt " + channel + " [" + TimeAndDate.hoursMinutes(new Date().getTime()) + "]</div>";
+	if (epgDataArray.length == 0) {
+		html += "<div>&lt;Ingen data&gt;</div>";
+	} else {
+		for (var i=0; i < epgDataArray.length; i++) {
+			var epgData = epgDataArray[i];
+			if (epgData.isActive) {
+				html += "<div class='epgActive'>";
+			} else {
+				html += "<div>";
+			}
+			var title = epgData.title.length > 37 ? epgData.title.substring(0, 35).trim() + "..." : epgData.title;
+			html += TimeAndDate.hoursMinutes(epgData.startMillis) + ": " + title;
+			html += "</div>";
+		}
 	}
-	var timeout = Graphics.DEFAULT_INFO_TIMEOUT_SECONDS;
-	if(timeoutSeconds) {
-		timeout = timeoutSeconds;
+	return "<div class='epgSub'>" + html + "</div>";
+};
+
+Graphics.createProgramInfo = function(epgDataArray) {
+	var currentMillis = new Date().getTime();
+	for (var i=0; i < epgDataArray.length; i++) {
+		var epgData = epgDataArray[i];
+		if (epgData.endMillis > currentMillis) {
+			var html = "";
+			if (epgData.isActive) {
+				html += Graphics.createEpgSub(epgData, "Nå");
+			} else {
+				html += Graphics.createEpgSub(epgData);
+			}
+			if (i+1 < epgDataArray.length) {
+				html += Graphics.createEpgSub(epgDataArray[i+1]);
+			}
+			return html;
+		}
+	}
+	return "";
+};
+
+Graphics.createEpgSub = function(epgData, prefix) {
+	if (!prefix) {
+		prefix = TimeAndDate.hoursMinutes(epgData.startMillis);
+	}
+	prefix += ": ";
+	var html = 	"<div class='epgSub'>";
+	html += 		"<div class='epgHeader'>" + prefix + epgData.title + "</div>";
+	var description = epgData.description.trim();
+	if (description && description != "") {
+		description = description.length > 250 ? description.substring(0, 247).trim() + "..." : description;
+		html += 	"<div>" + description + "</div>";
+	} else {
+		html += 	"<div>&lt;Ingen beskrivelse tilgjengelig&gt;</div>";
+	}
+	html += 	"</div>";
+	return html;
+};
+
+Graphics.showEpg = function() {
+	$(Graphics.epgId).show();
+};
+
+Graphics.hideEpg = function() {
+	Graphics.stopEpgUpdate();
+	$(Graphics.epgId).hide();
+};
+
+Graphics.stopEpgUpdate = function() {
+	clearTimeout(Graphics.timeoutMap[Graphics.epgId]);
+};
+
+Graphics.showDescription = function(timeoutSeconds) {
+	var description = Player.getCurrentTitle();
+	$(Graphics.descriptionId).html(description);
+
+	if (Player.mediaElement.type == MediaElementType.LIVE) {
+		setTimeout(function() {
+			var title = ServiceClient.getCurrentLiveTitle(Player.mediaElement.id);
+			if (title) {
+				$(Graphics.descriptionId).html(description + ": " + title);
+			}
+		}, 0);
+	}
+	if (!timeoutSeconds) {
+		timeoutSeconds = Graphics.DEFAULT_INFO_TIMEOUT_SECONDS;
 	}
 	$(Graphics.descriptionId).stop();
 	$(Graphics.descriptionId).css({ opacity: 1 });
 	$(Graphics.descriptionId).show();
-	Graphics.delayedAction(Graphics.descriptionId, Graphics.fadeOutDescription, timeout);
+	Graphics.delayedAction(Graphics.descriptionId, Graphics.fadeOutDescription, timeoutSeconds);
 };
 
 Graphics.fadeOutDescription = function() {
@@ -119,13 +226,14 @@ Graphics.htmlFromArray = function(array) {
 	return html;
 };
 
-Graphics.showPlayerInfo = function(state, description, timeoutSeconds) {
-	Graphics.showPlayerState(state, timeoutSeconds);
-	Graphics.showDescription(description, timeoutSeconds);
-	Graphics.showProgress(timeoutSeconds);
+Graphics.showPlayerInfo = function(state) {
+	Graphics.showPlayerState(state);
+	Graphics.showDescription();
+	Graphics.showProgress();
 };
 
-Graphics.hidePlayerStateAndProgress = function() {
+Graphics.hidePlayerInfo = function() {
+	$(Graphics.descriptionId).hide();
 	$(Graphics.playerStateId).hide();
 	$(Graphics.progressId).hide();
 };
