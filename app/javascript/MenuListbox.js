@@ -69,7 +69,9 @@ function MenuListbox(menuBox, mediaElements) {
 		this.selectedItem = this.menuContent[this.index];
 		this.selectedItem.attr("class", "item selected");
 		var startScrollDelay = ((Background.CROSSFADE_INTERVAL_SECONDS + Background.getCrossFadeDuration()) * 1000) + 250;
-		setTimeout(function (menuListbox, item) { menuListbox.scrollItem(item); }, startScrollDelay, this, this.selectedItem);
+		var menuListbox = this;
+		var selectedItem = this.selectedItem;
+		setTimeout(function () { menuListbox.scrollItem(selectedItem); }, startScrollDelay);
 	};
 	
 	this.scrollItem = function(item) {

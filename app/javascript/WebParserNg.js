@@ -149,15 +149,15 @@ WebParserNg.search = function(menu, mediaElement, searchString) {
 		var seen = {};
 		var results = [];
 		$(html).find("#searchResult .listobject-link").each(function(index, value) {
-			var title = value.text;
+			var title = value.text.trim();
 			if (!seen[title]) {
 				seen[title] = true;
 				var pathname = value.pathname;
 				if (WebParserNg.isSeries(pathname)) {
-					results.push(new MediaElement(null, MediaElementType.SERIES, value.text + "*", 
+					results.push(new MediaElement(null, MediaElementType.SERIES, title + "*", 
 							urlPrefix + pathname, null, null, WebParserNg.getImageUrl(pathname)));
 				} else if (WebParserNg.isProgram(pathname)) {
-					results.push(new MediaElement(WebParserNg.getMediaId(pathname), MediaElementType.PROGRAM, value.text, 
+					results.push(new MediaElement(WebParserNg.getMediaId(pathname), MediaElementType.PROGRAM, title, 
 							urlPrefix + pathname, null, null, WebParserNg.getImageUrl(pathname)));
 				} else {
 					Logger.log("Unknown element: " + value);
@@ -242,7 +242,12 @@ WebParserNg.getEpisodes = function(menu, mediaElement) {
 	});
 };
 
+WebParserNg.sanitizePath = function(pathname) {
+	return pathname.indexOf("/") == 0 ? pathname : "/" + pathname;
+};
+
 WebParserNg.getImageUrl = function(pathname) {
+	pathname = WebParserNg.sanitizePath(pathname);
 	var pathArray = pathname.split("/");
 	if (pathArray.length >= 3 && WebParserNg.isSeries(pathname)) {
 		return WebParserNg.IMAGE_ENRICH_URL + pathArray[2];
@@ -256,6 +261,7 @@ WebParserNg.getImageUrl = function(pathname) {
 };
 
 WebParserNg.getMediaId = function(pathname) {
+	pathname = WebParserNg.sanitizePath(pathname);
 	if (pathname) {
 		if (WebParserNg.isSeries(pathname)) {
 			return pathname.split("/")[3].toLowerCase();
@@ -280,6 +286,7 @@ WebParserNg.isRadio = function(url) {
 };
 
 WebParserNg.isSeries = function(pathname) {
+	pathname = WebParserNg.sanitizePath(pathname);
 	if (pathname.split("/").length > 1 && 
 			pathname.split("/")[1] == WebParserNg.SERIES_PATH_PREFIX) {
 		return true;
@@ -288,6 +295,7 @@ WebParserNg.isSeries = function(pathname) {
 };
 
 WebParserNg.isProgram = function(pathname) {
+	pathname = WebParserNg.sanitizePath(pathname);
 	if (pathname.split("/").length > 1 && 
 			pathname.split("/")[1] == WebParserNg.PROGRAM_PATH_PREFIX) {
 		return true;
@@ -296,6 +304,7 @@ WebParserNg.isProgram = function(pathname) {
 };
 
 WebParserNg.isEpisode = function(pathname) {
+	pathname = WebParserNg.sanitizePath(pathname);
 	if (pathname.split("/").length > 2  && 
 			pathname.split("/")[2] == WebParserNg.EPISODE_PATH_PREFIX) {
 		return true;

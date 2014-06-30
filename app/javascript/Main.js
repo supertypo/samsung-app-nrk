@@ -106,3 +106,7 @@ Main.getBrowser = function() {
 Array.prototype.last = function() {
 	return this[this.length-1];
 };
+
+String.prototype.trim = function() {
+    return this.replace(/^\s+|\s+$/gm,'');
+};

@@ -75,9 +75,9 @@ MediaElementClient.lookupMediaElement = function(mediaId, forceReload, callback)
 						content["id"], 
 						MediaElementClient.getType(content),
 						MediaElementClient.getTitle(content),
-						Config.WEB_URL + content["relativeOriginUrl"],
+						(content["mediaType"] == "Audio" ? Config.RADIO_WEB_URL : Config.WEB_URL) + content["relativeOriginUrl"],
 						content["description"],
-						content["mediaUrl"],
+						MediaElementClient.changeUrlToHls(content["mediaUrl"]),
 						MediaElementClient.getImageUrl(content),
 						content["subtitlesUrlPath"]
 				);
@@ -111,10 +111,31 @@ MediaElementClient.getTitle = function(content) {
 	return content["title"];
 };
 
+MediaElementClient.changeUrlToHls = function(mediaUrl) {
+	if(mediaUrl.indexOf("manifest.f4m") != -1) {
+		Logger.log("Found flash (" + mediaUrl + "), converting to HLS");
+		mediaUrl = mediaUrl.replace("manifest.f4m", "master.m3u8");
+		mediaUrl = mediaUrl.replace("http://", "https://");
+		mediaUrl = mediaUrl.replace("/z/", "/i/");
+		if (mediaUrl.indexOf("?") != -1) {
+			mediaUrl = mediaUrl.substring(0, mediaUrl.indexOf("?"));
+		}
+	}
+	return mediaUrl;
+};
+
 MediaElementClient.getImageUrl = function(content) {
 	try {
 		var webImages = content["images"]["webImages"];
-		return webImages[webImages.length-1]["imageUrl"];
+		var largeImages = $.grep(webImages, function(e) { return e["pixelWidth"] >= Config.FANART_MIN_WIDTH; });
+		largeImages.sort(function(a,b) {
+			if(a["pixelWidth"] > b["pixelWidth"]) {
+				return 1;
+			} else {
+				return -1;
+			}
+		});
+		return largeImages[0]["imageUrl"];
 	} catch (error) {
 		Logger.log("Couldn't get imageUrl for " + mediaId);
 		return null;

@@ -17,5 +17,7 @@ var Config = {
 		RADIO_WEB_URL: "http://radio.nrk.no/",
 		API_URL: "http://v7.psapi.nrk.no/",
 		MENU_CACHE_TIMEOUT_MINUTES: 30,
-		MEDIA_CACHE_TIMEOUT_HOURS: 168
+		MEDIA_CACHE_TIMEOUT_HOURS: 168,
+		FANART_MIN_WIDTH: 900,
+		EPG_MENU_OFFSET_LEFT: 745
 };

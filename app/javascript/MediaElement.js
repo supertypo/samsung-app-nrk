@@ -27,7 +27,7 @@ var MediaElementType = {
 	SUBCATEGORY: "SUBCATEGORY",
 	PROGRAM: "PROGRAM", 
 	SERIES: "SERIES",
-	SEASON: "SEASON",
+	SEASON: "SEASON"
 };
 
 /** @constructor */

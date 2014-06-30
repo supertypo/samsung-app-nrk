@@ -15,8 +15,7 @@
 var MediaElementCache = {
 		STORE_DIR: curWidget.id,
 		STORE_FILE: "MediaElementCache",
-		store: {},
-		isLoaded: false
+		store: {}
 };
 
 MediaElementCache.cache = function(id, mediaElement) {
@@ -37,28 +36,31 @@ MediaElementCache.get = function(id) {
 };
 
 MediaElementCache.save = function() {
-	var fs = new FileSystem();
-	if (!fs.isValidCommonPath(MediaElementCache.STORE_DIR)) {
-		fs.createCommonDir(MediaElementCache.STORE_DIR);
+	if (Main.isModernFirmware()) {
+		var fs = new FileSystem();
+		if (!fs.isValidCommonPath(MediaElementCache.STORE_DIR)) {
+			fs.createCommonDir(MediaElementCache.STORE_DIR);
+		}
+		var file = fs.openCommonFile(MediaElementCache.STORE_DIR + "/" + MediaElementCache.STORE_FILE, "w");
+		file.writeAll(JSON.stringify(MediaElementCache.store));
+		fs.closeCommonFile(file);
+		Logger.log("Saved MediaElementCache to disk, " + Object.keys(MediaElementCache.store).length + " objects saved");
 	}
-	var file = fs.openCommonFile(MediaElementCache.STORE_DIR + "/" + MediaElementCache.STORE_FILE, "w");
-	file.writeAll(JSON.stringify(MediaElementCache.store));
-	fs.closeCommonFile(file);
-	Logger.log("Saved MediaElementCache to disk, " + Object.keys(MediaElementCache.store).length + " objects saved");
 };
 
 MediaElementCache.load = function() {
-	var fs = new FileSystem();
-	var file = fs.openCommonFile(MediaElementCache.STORE_DIR + "/" + MediaElementCache.STORE_FILE, "r");
-	if (file) {
-		MediaElementCache.store = JSON.parse(file.readAll());
-		fs.closeCommonFile(file);
-		MediaElementCache.cleanExpired();
-		Logger.log("Loaded MediaElementCache from disk, " + Object.keys(MediaElementCache.store).length + " objects loaded");
-	} else {
-		Logger.log("Could not read MediaElementCache from disk");
+	if (Main.isModernFirmware()) {
+		var fs = new FileSystem();
+		var file = fs.openCommonFile(MediaElementCache.STORE_DIR + "/" + MediaElementCache.STORE_FILE, "r");
+		if (file) {
+			MediaElementCache.store = JSON.parse(file.readAll());
+			fs.closeCommonFile(file);
+			MediaElementCache.cleanExpired();
+			Logger.log("Loaded MediaElementCache from disk, " + Object.keys(MediaElementCache.store).length + " objects loaded");
+		} else {
+			Logger.log("Could not read MediaElementCache from disk");
+		}
 	}
-	MediaElementCache.isLoaded = true;
 };
 
 MediaElementCache.cleanExpired = function() {
@@ -74,14 +76,18 @@ MediaElementCache.cleanExpired = function() {
 
 MediaElementCache.clear = function() {
 	MediaElementCache.store = {};
-	var fs = new FileSystem();
-	if (fs.isValidCommonPath(MediaElementCache.STORE_DIR + "/" + MediaElementCache.STORE_FILE)) {
-		if(fs.deleteCommonFile(MediaElementCache.STORE_DIR + "/" + MediaElementCache.STORE_FILE)) {
-			Logger.log("Deleted MediaElementCache from disk");
+	if (Main.isModernFirmware()) {
+		var fs = new FileSystem();
+		if (fs.isValidCommonPath(MediaElementCache.STORE_DIR + "/" + MediaElementCache.STORE_FILE)) {
+			if(fs.deleteCommonFile(MediaElementCache.STORE_DIR + "/" + MediaElementCache.STORE_FILE)) {
+				Logger.log("Deleted MediaElementCache from disk");
+			} else {
+				Logger.log("Failed to delete MediaElementCache from disk");
+			}
 		} else {
-			Logger.log("Failed to delete MediaElementCache from disk");
+			Logger.log("No MediaElementCache found");
 		}
 	} else {
-		Logger.log("No MediaElementCache found");
+		Logger.log("In-memory MediaElementCache cleared");
 	}
 };

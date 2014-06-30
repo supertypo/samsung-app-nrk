@@ -13,7 +13,7 @@
 //	You should have received a copy of the GNU General Public License
 //	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 var MenuManager = {
-	MAX_VISIBLE_DEPTH: 2,
+	MAX_VISIBLE_DEPTH: 1,
 	ID_MENU : "#menu",
 	MENU_DESCRIPTION : "Hovedmeny",
 	SCREEN_SAVER_INTERVAL_SECONDS: 30,

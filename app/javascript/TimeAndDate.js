@@ -15,7 +15,7 @@
 var TimeAndDate = {
 		ID_CLOCK : "#clock",
 		WALLCLOCK_UPDATE_INTERVAL_SECONDS : 0.2,
-		wallClockEnabled : false,
+		wallClockEnabled : false
 };
 
 TimeAndDate.showWallClock = function() {

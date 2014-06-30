@@ -31,13 +31,13 @@ var Graphics = {
 		debugId : "#debug",
 		playerStateId : "#state",
 		bufferId : "#bufferingProgress",
-		progressId : "#timeProgress",
+		progressId : "#timeProgress"
 };
 
 Graphics.displayEpg = function(mediaElement) {
 	if (mediaElement.id && mediaElement.type == MediaElementType.LIVE) {
 		Graphics.updateEpg(mediaElement.id, mediaElement.title);
-	} else if (MenuManager.currentDepth < 2 && mediaElement.description) {
+	} else if (mediaElement.description) {
 		Graphics.updateProgramDescription(mediaElement);
 	} else {
 		Graphics.hideEpg();
@@ -123,6 +123,7 @@ Graphics.createEpgSub = function(epgData, prefix) {
 };
 
 Graphics.showEpg = function() {
+	$(Graphics.epgId).css("left", Config.EPG_MENU_OFFSET_LEFT - MenuManager.currentLeft);
 	$(Graphics.epgId).show();
 };
 

@@ -60,12 +60,14 @@ function Menu(parentMenu, mediaElement) {
 	this.updateInfo = function() {
 		if (this.mediaElements) {
 			clearTimeout(this.updateInfoTimeout);
-			this.updateInfoTimeout = setTimeout(function(enrich, mediaElement) {
+			var enrich = this.enrich;
+			var mediaElement = this.getSelectedMediaElement();
+			this.updateInfoTimeout = setTimeout(function() {
 				enrich(mediaElement, false, function(enrichedMediaElement) {
 					Graphics.displayEpg(enrichedMediaElement);
 					Background.change(enrichedMediaElement.imageUrl);
 				});
-			}, 250, this.enrich, this.getSelectedMediaElement());
+			}, 250);
 		}
 	};
 	

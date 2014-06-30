@@ -20,8 +20,10 @@ var Player = {
 	PAUSED: 2,
 	state: 0,
 	mediaElement: null,
-	playerParams: "|STARTBITRATE=1500000|COMPONENT=HLS",
-	oldPlayerParams: "|STARTTIME=02:55:00|STARTBITRATE=1500000|COMPONENT=HLS"
+	parms: "|STARTBITRATE=1000000|COMPONENT=HLS",
+	radioParms: "|STARTBITRATE=64000|COMPONENT=HLS",
+	oldParms: "|STARTTIME=02:55:00|STARTBITRATE=1000000|COMPONENT=HLS",
+	oldRadioParms: "|STARTTIME=02:55:00|STARTBITRATE=64000|COMPONENT=HLS"
 };
 
 Player.init = function() {
@@ -79,14 +81,25 @@ Player.startPlayback = function() {
 		var mediaUrl = Player.mediaElement.mediaUrl;
 		Player.state = Player.PLAYING;
 		if(Main.isModernFirmware()) {
-			Logger.log("Starting playback of: " + mediaUrl + Player.playerParams);
 //			PlayerEventHandler.OnBufferingComplete(); // TESTING WITHOUT PLAYBACK
-			pluginPlayer.InitPlayer(mediaUrl + Player.playerParams);
+			if (WebParserNg.isRadio(Player.mediaElement.url)) {
+				Logger.log("Starting playback of: " + mediaUrl + Player.radioParms);
+				pluginPlayer.InitPlayer(mediaUrl + Player.radioParms);
+			} else {
+				Logger.log("Starting playback of: " + mediaUrl + Player.parms);
+				pluginPlayer.InitPlayer(mediaUrl + Player.parms);
+			}
 			Player.setBufferSizes();
 			pluginPlayer.StartPlayback();
 		} else {
-			Logger.log("Starting playback of: " + mediaUrl + Player.oldPlayerParams);
-			pluginPlayer.Play(mediaUrl + Player.oldPlayerParams);
+//			PlayerEventHandler.OnBufferingComplete(); // TESTING WITHOUT PLAYBACK
+			if (WebParserNg.isRadio(Player.mediaElement.url)) {
+				Logger.log("Starting playback of: " + mediaUrl + Player.oldRadioParms);
+				pluginPlayer.Play(mediaUrl + Player.oldRadioParms);
+			} else {
+				Logger.log("Starting playback of: " + mediaUrl + Player.oldParms);
+				pluginPlayer.Play(mediaUrl + Player.oldParms);
+			}
 		}
 		Subtitle.reset();
 		Main.disableScreenSaver();
