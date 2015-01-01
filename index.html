@@ -17,36 +17,40 @@
 		<script type="text/javascript" src="$MANAGER_WIDGET/Common/API/TVKeyValue.js"></script>
 		<script type="text/javascript" src="$MANAGER_WIDGET/Common/API/Plugin.js"></script>
 		
-		<script type="text/javascript" src="app/javascript/Config.js"></script>
 		<script type="text/javascript" src="app/javascript/Logger.js"></script>
-		<script type="text/javascript" src="app/javascript/Update.js"></script>
-		<script type="text/javascript" src="app/javascript/Main.js"></script>
-		<script type="text/javascript" src="app/javascript/MenuManager.js"></script>
-		<script type="text/javascript" src="app/javascript/TimeAndDate.js"></script>
-		<script type="text/javascript" src="app/javascript/Menu.js"></script>
-		<script type="text/javascript" src="app/javascript/MenuCache.js"></script>
-		<script type="text/javascript" src="app/javascript/MenuListbox.js"></script>
-		<script type="text/javascript" src="app/javascript/WebParserNg.js"></script>
-		<script type="text/javascript" src="app/javascript/ServiceClient.js"></script>
-		<script type="text/javascript" src="app/javascript/MediaElement.js"></script>
-		<script type="text/javascript" src="app/javascript/MediaElementClient.js"></script>
-		<script type="text/javascript" src="app/javascript/MediaElementCache.js"></script>
-		<script type="text/javascript" src="app/javascript/Subtitle.js"></script>
-		<script type="text/javascript" src="app/javascript/Player.js"></script>
-		<script type="text/javascript" src="app/javascript/KeyHandler.js"></script>
-		<script type="text/javascript" src="app/javascript/Graphics.js"></script>
-		<script type="text/javascript" src="app/javascript/Background.js"></script>
-		<script type="text/javascript" src="app/javascript/PlayerEventHandler.js"></script>
-		<script type="text/javascript" src="app/javascript/Keyboard.js"></script>
-		<script type="text/javascript" src="app/javascript/KeyboardHandler.js"></script>
+		<script type="text/javascript" src="app/javascript/Loader.js"></script>
+		<script type="text/javascript" src="app/javascript/Exports.js"></script>
+		
+		<!-- Enable for local run -->
+<!-- 		<script type="text/javascript" src="app/javascript/runtime/Config.js"></script> -->
+<!-- 		<script type="text/javascript" src="app/javascript/runtime/Main.js"></script> -->
+<!-- 		<script type="text/javascript" src="app/javascript/runtime/Update.js"></script> -->
+<!-- 		<script type="text/javascript" src="app/javascript/runtime/MenuManager.js"></script> -->
+<!-- 		<script type="text/javascript" src="app/javascript/runtime/TimeAndDate.js"></script> -->
+<!-- 		<script type="text/javascript" src="app/javascript/runtime/Menu.js"></script> -->
+<!-- 		<script type="text/javascript" src="app/javascript/runtime/MenuCache.js"></script> -->
+<!-- 		<script type="text/javascript" src="app/javascript/runtime/MenuListbox.js"></script> -->
+<!-- 		<script type="text/javascript" src="app/javascript/runtime/WebParserNg.js"></script> -->
+<!-- 		<script type="text/javascript" src="app/javascript/runtime/ServiceClient.js"></script> -->
+<!-- 		<script type="text/javascript" src="app/javascript/runtime/MediaElement.js"></script> -->
+<!-- 		<script type="text/javascript" src="app/javascript/runtime/MediaElementClient.js"></script> -->
+<!-- 		<script type="text/javascript" src="app/javascript/runtime/MediaElementCache.js"></script> -->
+<!-- 		<script type="text/javascript" src="app/javascript/runtime/Subtitle.js"></script> -->
+<!-- 		<script type="text/javascript" src="app/javascript/runtime/Player.js"></script> -->
+<!-- 		<script type="text/javascript" src="app/javascript/runtime/KeyHandler.js"></script> -->
+<!-- 		<script type="text/javascript" src="app/javascript/runtime/Graphics.js"></script> -->
+<!-- 		<script type="text/javascript" src="app/javascript/runtime/Background.js"></script> -->
+<!-- 		<script type="text/javascript" src="app/javascript/runtime/PlayerEventHandler.js"></script> -->
+<!-- 		<script type="text/javascript" src="app/javascript/runtime/Keyboard.js"></script> -->
+<!-- 		<script type="text/javascript" src="app/javascript/runtime/KeyboardHandler.js"></script> -->
+<!-- 		<script type="text/javascript" src="app/javascript/runtime/Exports.js"></script> -->
 	</head>
 
-	<body onload="Main.startApp();" onunload="Main.stopApp();">
+	<body onload="app_onLoad();" onunload="app_onUnload();">
 		<!-- Dummy anchor as focus for key events -->
 		<a id="anchor" href="javascript:void(0);" onkeydown="app_keyDown();"></a>
 		<div id="background0" class="background"></div>
 		<div id="background1" class="background"></div>
-		<div id="backgroundCache" class="background" style="display:none;"></div>
 		<div id="info"></div>
 		<div id="clock"></div>
 		<div id="channelDescription" class="infoElement"></div>

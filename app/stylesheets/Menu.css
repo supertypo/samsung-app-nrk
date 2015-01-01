@@ -20,6 +20,7 @@
 	border-width: 2px; 
 	border-color: white;
 	padding-top: 5px;
+ 	padding-bottom: 5px;
 	padding-left: 8px;
 	padding-right: 8px;
 	font-size: 26px;
@@ -38,7 +39,7 @@
 }
 
 .epgSub {
-	max-height: 500px;
+	max-height: 575px;
 	overflow: hidden;
 	margin-bottom: 10px;
 	border-style: solid;
@@ -50,6 +51,15 @@
 	font-size: 21px;
 	color: rgb(140,140,140);
 	background-color: rgba(0,0,0,0.8);
+}
+
+#thumbnail {
+	display: none;
+	height: 268px;
+	margin-bottom: 10px;
+	background-position: center; 
+	background-repeat: no-repeat;
+	background-size: cover;
 }
 
 .epgHeader {
