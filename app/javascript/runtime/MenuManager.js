@@ -135,6 +135,12 @@ MenuManager.keyEnter = function() {
 							MenuManager.keyReturn();
 						} else if (selectedValue.mediaUrl) {
 							MenuManager.hasMoved = false;
+							var parentMenu = MenuManager.selectedMenu.parentMenu;
+							if (parentMenu.getSelectedMediaElement().type == MediaElementType.SEASON) {
+								LastSeen.put(parentMenu.parentMenu.getSelectedMediaElement());
+							} else {
+								LastSeen.put(selectedValue);
+							}
 							Player.play(selectedValue);
 							Graphics.showDescription(MenuManager.INFO_TIMEOUT_SECONDS);
 						} else {

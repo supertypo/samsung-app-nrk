@@ -49,6 +49,8 @@ WebParserNg.getMediaElements = function(menu, mediaElement) {
 		return WebParserNg.getSeasons(menu, mediaElement);
 	case (MediaElementType.SEASON):
 		return WebParserNg.getEpisodes(menu, mediaElement);
+	case (MediaElementType.LASTSEEN):
+		return WebParserNg.getLastSeen(menu);
 	default:
 		Logger.log("Unknown mediaElement.type: " + mediaElement);
 	}
@@ -96,7 +98,8 @@ WebParserNg.getRootMenu = function(menu) {
 //	       new MediaElement(null, MediaElementType.POPULAR, "Populært", Config.WEB_URL + "programmer/populart"),
 	       new MediaElement(null, MediaElementType.RECOMMENDED, "Aktuelt", Config.WEB_URL + "programmer/nyheter/nytt"),
 	       new MediaElement(null, MediaElementType.ALL, "Arkiv", Config.WEB_URL + "programmer"),
-	       new MediaElement(null, MediaElementType.SEARCH, "Søk", Config.WEB_URL + "sokmaxresults?filter=rettigheter&q="),
+	       new MediaElement(null, MediaElementType.LASTSEEN, "Sist sett", null),
+	       new MediaElement(null, MediaElementType.SEARCH, "Søk", Config.WEB_URL + "searchresults?q="),
 	       new MediaElement(null, null, "--------------"),
 	       new MediaElement(null, MediaElementType.LIVE_LIST, "Radio direkte", Config.RADIO_WEB_URL + "direkte"),
 	       new MediaElement(null, MediaElementType.ALL, "Radio arkiv", Config.RADIO_WEB_URL + "programmer")];
@@ -109,22 +112,30 @@ WebParserNg.getMediaUrl = function(url) {
 	});
 };
 
+WebParserNg.getLastSeen = function(menu) {
+	var results = LastSeen.getAll();
+	menu.preSelectedTitle = null;
+	menu.setMediaElements(results);
+	menu.timestamp = 0;
+};
+
 WebParserNg.getLiveChannels = function(menu, mediaElement) {
-	WebParserNg.getHtml(mediaElement.url, function(html) {
-		var results = [];
-		if (WebParserNg.isRadio(mediaElement.url)) {
-			$(html).find(".channel-grid.closed .channel-link").each(function(index, value) {
+	if (!WebParserNg.isRadio(mediaElement.url)) {
+		menu.setMediaElements([new MediaElement("nrk1", MediaElementType.LIVE, "NRK1"),
+		                       new MediaElement("nrk2", MediaElementType.LIVE, "NRK2"),
+		                       new MediaElement("nrk3", MediaElementType.LIVE, "NRK3"),
+		                       new MediaElement("nrksuper", MediaElementType.LIVE, "NRK Super")
+		]);
+	} else {
+		WebParserNg.getHtml(mediaElement.url, function(html) {
+			var results = [];
+			$(html).find(".radio-channel .channel-link").each(function(index, value) {
 				results.push(new MediaElement(WebParserNg.getMediaId(value.pathname), MediaElementType.LIVE, value.text.trim()));
 			});
-		} else {
-			$(html).find(".channelLogoImage .c-link").each(function(index, value) {
-				$(value).find('span').remove();
-				results.push(new MediaElement(WebParserNg.getMediaId(value.pathname), MediaElementType.LIVE, value.text.trim()));
-			});
-		}
-		Logger.log("Found " + results.length + " live channels");
-		menu.setMediaElements(results);
-	});
+			Logger.log("Found " + results.length + " live channels");
+			menu.setMediaElements(results);
+		});
+	}
 };
 
 WebParserNg.getRecommendedShows = function(menu, mediaElement) {
@@ -152,11 +163,11 @@ WebParserNg.getCategories = function(menu, mediaElement, mediaElementType) {
 	WebParserNg.getHtml(mediaElement.url, function(html) {
 		var urlPrefix = WebParserNg.getUrlPrefix(mediaElement.url);
 		var results = [];
-		$(html).find(".category-menu .buttonbar-link").each(function(index, value) {
+		$(html).find(".category-menu .drilldown-link").each(function(index, value) {
 			if (value.text == "1814-jubileet") {
 			} else if (value.text == "Barn" && (mediaElement.type != MediaElementType.ALL || WebParserNg.isRadio(mediaElement.url))) {
 			} else {
-				results.push(new MediaElement(null, mediaElementType, value.text, urlPrefix + value.pathname));
+				results.push(new MediaElement(null, mediaElementType, value.text.trim(), urlPrefix + value.pathname));
 			}
 		});
 		Logger.log("Found " + results.length + " categories");
@@ -169,14 +180,14 @@ WebParserNg.search = function(menu, mediaElement, searchString) {
 		var urlPrefix = WebParserNg.getUrlPrefix(mediaElement.url);
 		var seen = {};
 		var results = [];
-		html = $('<div/>', { html: html });
-		$(html).find(".search-hit:not(.no-rights) .listobject-link").each(function(index, value) {
+		$(html).find(".searchresult").each(function(index, value) {
 			var title = value.text.trim();
 			if (!seen[title]) {
 				seen[title] = true;
 				var pathname = value.pathname;
 				var parentClasses = $(value).parent().parent().attr("class");
-				if (parentClasses.indexOf("search-series-hit") != -1) {
+				if (parentClasses.indexOf("no-rights") != -1) {
+				} else if (parentClasses.indexOf("search-series-hit") != -1) {
 					results.push(new MediaElement(null, MediaElementType.SERIES, title + "*", 
 							urlPrefix + pathname, null, null, WebParserNg.getImageUrl(pathname)));
 				} else {
@@ -187,7 +198,7 @@ WebParserNg.search = function(menu, mediaElement, searchString) {
 		});
 		Logger.log("Found " + results.length + " search results");
 		menu.setMediaElements(results);
-		menu.timestamp = null;
+		menu.timestamp = 0;
 	});
 };
 
@@ -211,15 +222,23 @@ WebParserNg.getSubcategoryContent = function(menu, mediaElement) {
 	WebParserNg.getHtml(mediaElement.url, function(html) {
 		var urlPrefix = WebParserNg.getUrlPrefix(mediaElement.url);
 		var results = [];
-		var content = $.parseJSON($(html).find(".index-list.air").attr("data-module-settings"))["indexElements"];
+		var content = $.parseJSON($(html).find(".index-list").attr("data-module-settings"))["indexElements"];
 		for (var i=0; i<content.length; i++) {
 			var mediaInfo = content[i];
 			if (mediaInfo["hasOndemandRights"]) {
+				var title = mediaInfo["title"];
+				var imageUrl = mediaInfo["imageUrl"];
+				var url = mediaInfo["url"];
+				if (WebParserNg.isRadio(mediaElement.url)) {
+					title = mediaInfo["Title"];
+					imageUrl = mediaInfo["ImageUrl"];
+					url = mediaInfo["Url"];
+				}
 				var type = mediaInfo["type"] == "series" ? MediaElementType.SERIES : MediaElementType.PROGRAM;
 				var id = (type == MediaElementType.PROGRAM) ? mediaInfo["id"] : null;
-				var title = (type == MediaElementType.PROGRAM) ? mediaInfo["Title"] : mediaInfo["Title"] + "*";
-				var imageUrl = WebParserNg.isRadio(mediaElement.url) ? mediaInfo["ImageUrl"] : WebParserNg.getImageUrl(mediaInfo["Url"]);
-				results.push(new MediaElement(id, type, title, urlPrefix + mediaInfo["Url"], null, null, imageUrl));
+				title = (type == MediaElementType.PROGRAM) ? title : title + "*";
+				imageUrl = WebParserNg.isRadio(mediaElement.url) ? imageUrl : WebParserNg.getImageUrl(url);
+				results.push(new MediaElement(id, type, title, urlPrefix + url, null, null, imageUrl));
 			}
 		};
 		Logger.log("Found " + results.length + " shows in subcategory");
@@ -247,7 +266,7 @@ WebParserNg.getEpisodes = function(menu, mediaElement) {
 	WebParserNg.getHtml(mediaElement.url, function(html) {
 		var urlPrefix = WebParserNg.getUrlPrefix(mediaElement.url);
 		var results = [];
-		$(html).find(".episode-item:not(.no-rights) .p-link").each(function(index, value) {
+		$(html).find(".episode-item:not(.no-rights) a").each(function(index, value) {
 			$(value).find('.episode-list-title span').remove();
 			var title = $(value).find('.episode-list-title').text();
 			var pathname = value.pathname;

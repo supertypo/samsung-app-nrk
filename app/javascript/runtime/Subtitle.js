@@ -87,7 +87,7 @@ Subtitle.hide = function() {
 	$(Subtitle.ID_SUBTITLE).hide();
 };
 
-Subtitle.loadFile = function(url) {
+Subtitle.loadFile = function(url, id) {
 	Subtitle.unload();
 	if (url) {
 		url = Config.API_URL + url;
@@ -95,9 +95,14 @@ Subtitle.loadFile = function(url) {
 			url: url,
 			dataType: "html",
 			success: function(content) {
-				Logger.log("Subtitles loaded from '" + url + "', length: " + content.length);
-				Subtitle.file = content;
-				Subtitle.loadSubs();
+				if (content.length < 1000) {
+					Logger.log("Subtitles for " + id + " has length less than 1000, trying alternate url");
+					Subtitle.loadAlternateFile(id);
+				} else {
+					Logger.log("Subtitles loaded from '" + url + "', length: " + content.length);
+					Subtitle.file = content;
+					Subtitle.loadSubs();
+				}
 			},
 			error: function(jqXHR, textStatus, errorThrown) {
 				Logger.log("Loading of subtitles '" + url + "' failed, error is: '" + textStatus + "' - '" + errorThrown + "'");
@@ -106,6 +111,22 @@ Subtitle.loadFile = function(url) {
 	} else {
 		Logger.log("No subtitles available");
 	}
+};
+
+Subtitle.loadAlternateFile = function(id) {
+	var url = Config.WEB_URL + "/programsubtitles/" + id;
+	$.ajax({
+		url: url,
+		dataType: "html",
+		success: function(content) {
+			Logger.log("Subtitles loaded from '" + url + "', length: " + content.length);
+			Subtitle.file = content;
+			Subtitle.loadSubs();
+		},
+		error: function(jqXHR, textStatus, errorThrown) {
+			Logger.log("Loading of subtitles '" + url + "' failed, error is: '" + textStatus + "' - '" + errorThrown + "'");
+		}
+	});
 };
 
 Subtitle.loadSubs = function() {

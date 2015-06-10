@@ -1,5 +1,5 @@
 @echo off
-set JAVA="c:\Program Files (x86)\Java\jre7\bin\java"
+set JAVA="c:\Program Files\Java\jre1.8.0_25\bin\java"
 set GCC_CMD=%JAVA% -jar lib\compiler.jar --charset=UTF-8 --language_in ECMASCRIPT3 --compilation_level WHITESPACE_ONLY
 set INPUT=..\
 set OUTPUT=target
@@ -35,6 +35,7 @@ set INPUT_JS=%INPUT%\app\javascript\runtime
  --js %INPUT_JS%\MediaElementCache.js^
  --js %INPUT_JS%\Subtitle.js^
  --js %INPUT_JS%\Player.js^
+ --js %INPUT_JS%\LastSeen.js^
  --js %INPUT_JS%\KeyHandler.js^
  --js %INPUT_JS%\Graphics.js^
  --js %INPUT_JS%\Background.js^

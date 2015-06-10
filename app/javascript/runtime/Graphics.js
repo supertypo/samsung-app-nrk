@@ -37,7 +37,7 @@ var Graphics = {
 Graphics.displayEpg = function(mediaElement) {
 	if (mediaElement.id && mediaElement.type == MediaElementType.LIVE) {
 		Graphics.updateEpg(mediaElement.id, mediaElement.title);
-	} else if (mediaElement.type == MediaElementType.PROGRAM || mediaElement.type == MediaElementType.SERIES) {
+	} else if (mediaElement.type == MediaElementType.PROGRAM) { // || mediaElement.type == MediaElementType.SERIES) {
 		Graphics.updateProgramDescription(mediaElement);
 	} else {
 		Graphics.hideEpg();

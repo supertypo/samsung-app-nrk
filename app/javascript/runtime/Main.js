@@ -64,11 +64,13 @@ Main.startApp = function() {
 	Update.check();
 	MenuCache.load();
 	MediaElementCache.load();
+	LastSeen.load();
 };
 
 Main.stopApp = function() {
 	MenuCache.save();
 	MediaElementCache.save();
+	LastSeen.save();
 	pluginPlayer.Stop();
 };
 

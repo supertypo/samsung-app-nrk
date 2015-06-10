@@ -38,7 +38,7 @@ Player.play = function(mediaElement) {
 	if(Player.state != Player.STOPPED) {
 		Player.stopPlayback();
 	}
-	Subtitle.loadFile(mediaElement.subtitlesUrl);
+	Subtitle.loadFile(mediaElement.subtitlesUrl, mediaElement.id);
 	Player.mediaElement = mediaElement;
 	Player.playVideo();
 };
@@ -77,7 +77,7 @@ Player.startPlayback = function() {
 	if(Player.mediaElement && Player.mediaElement.mediaUrl) {
 		var mediaUrl = Player.mediaElement.mediaUrl;
 		Player.state = Player.PLAYING;
-//			PlayerEventHandler.OnBufferingComplete(); // TESTING WITHOUT PLAYBACK
+//		PlayerEventHandler.OnBufferingComplete(); // TESTING WITHOUT PLAYBACK
 		if(Main.isModernFirmware()) {
 			var parms;
 			if (WebParserNg.isRadio(Player.mediaElement.url)) {

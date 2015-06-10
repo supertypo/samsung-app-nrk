@@ -39,10 +39,10 @@ function MenuListbox(menuBox, mediaElements, preSelectedTitle) {
 	};
 	
 	this.updateVisibleIndexes = function() {
-		var newVisibleFromIndex = this.index - (this.index % this.MAX_VISIBLE);
+		var newVisibleFromIndex = this.index - (this.index % Config.MENU_MAX_VISIBLE);
 		if(newVisibleFromIndex != this.visibleFromIndex) {
-			this.visibleFromIndex = this.index - (this.index % this.MAX_VISIBLE);
-			this.visibleToIndex = this.visibleFromIndex + this.MAX_VISIBLE;
+			this.visibleFromIndex = this.index - (this.index % Config.MENU_MAX_VISIBLE);
+			this.visibleToIndex = this.visibleFromIndex + Config.MENU_MAX_VISIBLE;
 			if(this.visibleToIndex > this.mediaElements.length) {
 				this.visibleToIndex = this.mediaElements.length;
 			}
@@ -130,7 +130,6 @@ function MenuListbox(menuBox, mediaElements, preSelectedTitle) {
 		this.updateVisibleIndexes();
 	};
 	
-	this.MAX_VISIBLE = 16;
 	this.mediaElements = mediaElements;
 	this.menuContent = [];
 	this.index = 0;

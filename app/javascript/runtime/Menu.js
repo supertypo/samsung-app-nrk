@@ -46,12 +46,18 @@ function Menu(parentMenu, mediaElement, expiredMenu) {
 	};
 	
 	this.show = function() {
-		this.menuBox.show();
+		$("#menu").append(this.menuBox);
+		if (this.listbox) {
+			this.listbox.draw();
+		} else {
+			this.menuBox.append(this.loadingBox);
+		}
 		this.updateInfo();
 	};
 	
 	this.hide = function() {
-		this.menuBox.hide();
+		this.menuBox.empty();
+		this.menuBox.remove();
 	};
 	
 	this.prev = function() {
@@ -123,6 +129,7 @@ function Menu(parentMenu, mediaElement, expiredMenu) {
 				menu = new Menu(this, mediaElement, result);
 			} else {
 				menu = result;
+				menu.parentMenu = this;
 				menu.show();
 			}
 		} else {

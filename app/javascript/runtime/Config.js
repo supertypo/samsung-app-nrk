@@ -13,7 +13,7 @@
 //	You should have received a copy of the GNU General Public License
 //	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 var Config = {
-		VERSION: "1.4.5",
+		VERSION: "1.4.9",
 		WEB_URL: "http://tv.nrk.no/",
 		RADIO_WEB_URL: "http://radio.nrk.no/",
 		API_URL: "http://v7.psapi.nrk.no/",
@@ -21,11 +21,13 @@ var Config = {
 		REQUEST_MAX_RETRIES: 2,
 		PLAYER_MAX_RETRIES: 3,
 		PLAYER_JUMP_DELAY_SECONDS: 3,
+		MENU_MAX_VISIBLE: 16,
 		MENU_CACHE_MEMORY_TIMEOUT_MINUTES: 30,
 		MENU_CACHE_DISK_TIMEOUT_DAYS: 30,
 		MEDIA_CACHE_TIMEOUT_HOURS: 336,
 		FANART_MIN_WIDTH: 900,
 		EPG_MENU_OFFSET_LEFT: 745,
 		RECENT_PROGRAM_COUNT: 40,
-		POPULAR_PROGRAM_COUNT: 40
+		POPULAR_PROGRAM_COUNT: 40,
+		LAST_SEEN_COUNT: 40
 };

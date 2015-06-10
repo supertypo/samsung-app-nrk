@@ -36,18 +36,18 @@ MediaElementClient.lookupJsonList = function(menu, mediaElement) {
 		url: url,
 		timeout: Config.REQUEST_TIMEOUT_SECONDS * 1000,
 		success: function(content) {
-			if (content && content["Data"]) {
+			if (content && content["data"]) {
 				MediaElementClient.lookupJsonListRetries = 0;
-				content = content["Data"];
+				content = content["data"];
 				var results = [];
 				for (var i=0; i<content.length; i++) {
 					var object = content[i];
-					var url = object["Url"];
+					var url = object["url"];
 					if (url && url != "") {
 						results.push(new MediaElement(
 								WebParserNg.getMediaId(url), 
 								MediaElementType.PROGRAM,
-								object["Title"],
+								object["title"],
 								Config.WEB_URL + url,
 								null,
 								null,

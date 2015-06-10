@@ -82,7 +82,7 @@ MediaElementCache.clear = function() {
 			if(fs.deleteCommonFile(MediaElementCache.STORE_DIR + "/" + MediaElementCache.STORE_FILE)) {
 				Logger.log("Deleted MediaElementCache from memory and disk");
 			} else {
-				Logger.log("Failed to delete MenuCache from disk, only memory cleared");
+				Logger.log("Failed to delete MediaElementCache from disk, only memory cleared");
 			}
 		} else {
 			Logger.log("No MediaElementCache found on disk, only memory cleared");

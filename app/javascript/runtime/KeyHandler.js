@@ -101,11 +101,13 @@ KeyHandler.keyDown = function() {
     		MenuCache.clear();
     		MediaElementCache.clear();
     		ServiceClient.clear();
+    		LastSeen.clear();
     		Loader.deleteRuntime();
     	} else if (kh.getKey(-1) == tvKey["KEY_5"] && kh.getKey(-2) == tvKey["KEY_2"]) {
     		// Force save cache to disk
     		MenuCache.save();
     		MediaElementCache.save();
+    		LastSeen.save();
     	}
         break;
         
