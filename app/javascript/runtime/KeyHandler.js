@@ -92,6 +92,10 @@ KeyHandler.keyDown = function() {
 		Graphics.displayDetailsToggle();
 		break;
 	
+	case tvKey["KEY_0"]:
+		Update.check();
+		break;
+		
     case tvKey["KEY_7"]:
     	if (kh.getKey(-1) == tvKey["KEY_3"]) {
     		// Show/hide log messages on-screen

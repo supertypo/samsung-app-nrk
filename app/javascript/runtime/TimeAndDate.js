@@ -49,10 +49,10 @@ TimeAndDate.getWallclockTime = function() {
 	var day = TimeAndDate.leadingZero(date.getDate());
 	var month = TimeAndDate.leadingZero(date.getMonth() + 1);
 	var year = date.getFullYear().toString().substring(2);
-	//FIXME: handle this properly, tv is buggy
-//	date.setUTCHours(date.getUTCHours() + 2);
-//	var h = TimeAndDate.leadingZero(date.getUTCHours());
-	var h = TimeAndDate.leadingZero(date.getHours());
+	//FIXME: handle this properly, some TVs thinks they're in the wrong zone
+	date.setUTCHours(date.getUTCHours() + 2);
+	var h = TimeAndDate.leadingZero(date.getUTCHours());
+//	var h = TimeAndDate.leadingZero(date.getHours());
 	var m = TimeAndDate.leadingZero(date.getMinutes());
 	var s = TimeAndDate.leadingZero(date.getSeconds());
 	return day + "." + month + "." + year + " " + h + ":" + m + ":" + s;

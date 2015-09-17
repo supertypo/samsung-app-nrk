@@ -13,7 +13,7 @@
 //	You should have received a copy of the GNU General Public License
 //	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 var Config = {
-		VERSION: "1.4.9",
+		VERSION: "1.4.11",
 		WEB_URL: "http://tv.nrk.no/",
 		RADIO_WEB_URL: "http://radio.nrk.no/",
 		API_URL: "http://v7.psapi.nrk.no/",
@@ -27,7 +27,7 @@ var Config = {
 		MEDIA_CACHE_TIMEOUT_HOURS: 336,
 		FANART_MIN_WIDTH: 900,
 		EPG_MENU_OFFSET_LEFT: 745,
-		RECENT_PROGRAM_COUNT: 40,
-		POPULAR_PROGRAM_COUNT: 40,
+		RECENT_PROGRAM_COUNT: 60,
+		POPULAR_PROGRAM_COUNT: 60,
 		LAST_SEEN_COUNT: 40
 };

@@ -229,15 +229,9 @@ WebParserNg.getSubcategoryContent = function(menu, mediaElement) {
 				var title = mediaInfo["title"];
 				var imageUrl = mediaInfo["imageUrl"];
 				var url = mediaInfo["url"];
-				if (WebParserNg.isRadio(mediaElement.url)) {
-					title = mediaInfo["Title"];
-					imageUrl = mediaInfo["ImageUrl"];
-					url = mediaInfo["Url"];
-				}
 				var type = mediaInfo["type"] == "series" ? MediaElementType.SERIES : MediaElementType.PROGRAM;
 				var id = (type == MediaElementType.PROGRAM) ? mediaInfo["id"] : null;
 				title = (type == MediaElementType.PROGRAM) ? title : title + "*";
-				imageUrl = WebParserNg.isRadio(mediaElement.url) ? imageUrl : WebParserNg.getImageUrl(url);
 				results.push(new MediaElement(id, type, title, urlPrefix + url, null, null, imageUrl));
 			}
 		};

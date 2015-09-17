@@ -90,7 +90,9 @@ Subtitle.hide = function() {
 Subtitle.loadFile = function(url, id) {
 	Subtitle.unload();
 	if (url) {
-		url = Config.API_URL + url;
+		if (url.indexOf("http") != 0) {
+			url = Config.API_URL + url;
+		}
 		$.ajax({
 			url: url,
 			dataType: "html",
