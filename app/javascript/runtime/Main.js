@@ -40,6 +40,7 @@ Main.patch = function() {
 	"}" +
 	".epgSub {" +
 	"	max-height: 575px !important;" +
+	"	background-color: rgba(0,0,0,0.9) !important;" +
 	"}" +
 	"#thumbnail {" +
 	"	display: none;" +
