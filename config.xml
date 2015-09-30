@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <widget>
-    <ThumbIcon>icon/logo_106-86.png</ThumbIcon>
+    <ThumbIcon>icon/logo_106-87.png</ThumbIcon>
     <BigThumbIcon>icon/logo_115-95.png</BigThumbIcon>
     <ListIcon>icon/logo_85-70.png</ListIcon>
     <BigListIcon>icon/logo_95-78.png</BigListIcon>
@@ -12,13 +12,13 @@
 	<videomute>n</videomute>
 	<dcont>n</dcont>
 	<type>user</type>
-	<widgetname>NRK Nett-TV</widgetname>
+	<widgetname>NRK-app</widgetname>
 	<width>1280</width>
 	<height>720</height>
 	<author>
 		<name>Marius Thøring</name>
 		<email></email>
-		<link></link>
+		<link>https://github.com/supertypo/samsung-app-nrk</link>
 		<organization></organization>
 	</author>
 </widget>

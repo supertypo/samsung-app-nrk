@@ -216,7 +216,7 @@ Graphics.delayedAction = function(id, delayedAction, seconds) {
 
 Graphics.refreshDetails = function() {
 	if (Graphics.detailsEnabled && !MenuManager.menuVisible) {
-		var detailsHtml = "NRK Nett-TV v" + Main.getVersion() + "<br/>";
+		var detailsHtml = "supertypo/NRK v" + Main.getVersion() + "<br/>";
 		detailsHtml += "------------------------<br/>";
 		detailsHtml += "Nåværende hastighet: " + Player.getCurrentBitrateKbps() + " kbps<br/>";
 		detailsHtml += "HW:" + Main.getModelCode() + " FW:" + Main.getFirmware() + "<br/>";
