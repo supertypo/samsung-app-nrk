@@ -1,2 +1,2 @@
 supertypo/NRK - App for Samsung Smart TV. Licensed under GNU GPL v3, or later. 
-Copyright: Marius Thøring (mthoring@gmail.com), 2014. Visit http://marius.thoering.no for more information.
+Copyright: Marius Thøring (mthoring@gmail.com), 2015. Visit http://marius.thoering.no for more information.
