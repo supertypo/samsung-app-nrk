@@ -19,9 +19,6 @@ var LastSeen = {
 };
 
 LastSeen.put = function(mediaElement) {
-	if (mediaElement.type != MediaElementType.PROGRAM && mediaElement.type != MediaElementType.SERIES) {
-		return;
-	}
 	for (var i=0; i<LastSeen.store.length; i++) {
 		if (LastSeen.store[i].title == mediaElement.title) {
 			LastSeen.store.splice(i, 1);

@@ -31,8 +31,10 @@ window.onerror = function(msg, url, line) {
 
 Logger.log = function(message) {
 	if(!message) {
-		message = "null";
+		proxiedAlert(message);
+		return;
 	}
+	message = message.toString();
 	proxiedAlert(message);
 	messageArray = message.split("\n");
 	for (var i=0; i<messageArray.length; i++) {

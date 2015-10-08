@@ -37,7 +37,7 @@ var Graphics = {
 Graphics.displayEpg = function(mediaElement) {
 	if (mediaElement.id && mediaElement.type == MediaElementType.LIVE) {
 		Graphics.updateEpg(mediaElement.id, mediaElement.title);
-	} else if (mediaElement.type == MediaElementType.PROGRAM) { // || mediaElement.type == MediaElementType.SERIES) {
+	} else if (mediaElement.type == MediaElementType.PROGRAM || mediaElement.type == MediaElementType.EPISODE) {
 		Graphics.updateProgramDescription(mediaElement);
 	} else {
 		Graphics.hideEpg();
@@ -49,7 +49,7 @@ Graphics.updateProgramDescription = function(mediaElement) {
 	html += "<div class='epgHeader'>" + mediaElement.title + "</div>";
 	
 	html += "<div>";
-	if (mediaElement.type == MediaElementType.PROGRAM) {
+	if (mediaElement.type == MediaElementType.PROGRAM || mediaElement.type == MediaElementType.EPISODE) {
 		if (mediaElement.description) {
 			html += mediaElement.description;
 		} else {
@@ -217,7 +217,7 @@ Graphics.delayedAction = function(id, delayedAction, seconds) {
 Graphics.refreshDetails = function() {
 	if (Graphics.detailsEnabled && !MenuManager.menuVisible) {
 		var detailsHtml = "supertypo/NRK v" + Main.getVersion() + "<br/>";
-		detailsHtml += "--------------------------<br/>";
+		detailsHtml += "---------------------------<br/>";
 		detailsHtml += "Nåværende hastighet: " + Player.getCurrentBitrateKbps() + " kbps<br/>";
 		detailsHtml += "HW:" + Main.getModelCode() + " FW:" + Main.getFirmware() + "<br/>";
 		detailsHtml += "<br/>- Pause/Play/Stop: Styrer avspilling<br/>";

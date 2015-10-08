@@ -28,11 +28,12 @@ var MediaElementType = {
 	SUBCATEGORY: "SUBCATEGORY",
 	PROGRAM: "PROGRAM", 
 	SERIES: "SERIES",
-	SEASON: "SEASON"
+	SEASON: "SEASON",
+	EPISODE: "EPISODE"
 };
 
 /** @constructor */
-function MediaElement(id, type, title, url, description, mediaUrl, imageUrl, subtitlesUrl) {
+function MediaElement(id, type, title, url, description, mediaUrl, imageUrl, subtitlesUrl, seriesTitle) {
 	this.id = id;
 	this.type = type;
 	this.title = title;
@@ -41,6 +42,7 @@ function MediaElement(id, type, title, url, description, mediaUrl, imageUrl, sub
 	this.mediaUrl = mediaUrl;
 	this.imageUrl = imageUrl;
 	this.subtitlesUrl = subtitlesUrl;
+	this.seriesTitle = seriesTitle;
 }
 
 MediaElement.prototype.toString = function() {

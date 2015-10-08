@@ -101,7 +101,8 @@ MediaElementClient.lookupMediaElement = function(mediaId, forceReload, callback)
 							content["description"],
 							MediaElementClient.changeUrlToHls(content["mediaUrl"]),
 							MediaElementClient.getImageUrl(content),
-							content["subtitlesUrlPath"]
+							content["subtitlesUrlPath"],
+							content["seriesTitle"]
 					);
 					MediaElementCache.cache(mediaId, result);
 					callback(result);
@@ -125,6 +126,8 @@ MediaElementClient.getType = function(content) {
 		return MediaElementType.LIVE;
 	} else if (originType == "program") {
 		return MediaElementType.PROGRAM;
+	} else if (originType == "episode") {
+		return MediaElementType.EPISODE;
 	} else {
 		Logger.log("Unknown MediaElement type, assuming " + MediaElementType.PROGRAM + ", origin type: " + originType);
 		return MediaElementType.PROGRAM;

@@ -135,9 +135,9 @@ MenuManager.keyEnter = function() {
 							MenuManager.keyReturn();
 						} else if (selectedValue.mediaUrl) {
 							MenuManager.hasMoved = false;
-							var parentMenu = MenuManager.selectedMenu.parentMenu;
-							if (parentMenu.getSelectedMediaElement().type == MediaElementType.SEASON) {
-								LastSeen.put(parentMenu.parentMenu.getSelectedMediaElement());
+							if (selectedValue.type == MediaElementType.EPISODE) {
+								LastSeen.put(new MediaElement(null, MediaElementType.SERIES, selectedValue.seriesTitle + "*",
+										selectedValue.url, selectedValue.description, null, selectedValue.imageUrl));
 							} else {
 								LastSeen.put(selectedValue);
 							}
