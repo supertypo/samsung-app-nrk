@@ -93,7 +93,7 @@ KeyHandler.keyDown = function() {
 		break;
 	
 	case tvKey["KEY_0"]:
-		Update.check();
+		TimeAndDate.binaryClock = TimeAndDate.binaryClock ? false : true;
 		break;
 		
     case tvKey["KEY_7"]:

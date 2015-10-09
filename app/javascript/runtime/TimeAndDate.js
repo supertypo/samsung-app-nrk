@@ -15,7 +15,8 @@
 var TimeAndDate = {
 		ID_CLOCK : "#clock",
 		WALLCLOCK_UPDATE_INTERVAL_SECONDS : 0.2,
-		wallClockEnabled : false
+		wallClockEnabled : false,
+		binaryClock: false
 };
 
 TimeAndDate.showWallClock = function() {
@@ -39,9 +40,22 @@ TimeAndDate.fadeOutWallClock = function() {
 
 TimeAndDate.runWallClock = function() {
 	if(TimeAndDate.wallClockEnabled) {
-		$(TimeAndDate.ID_CLOCK).html(TimeAndDate.getWallclockTime());
+		if (TimeAndDate.binaryClock) {
+			$(TimeAndDate.ID_CLOCK).html(TimeAndDate.getBinaryWallclockTime());
+		} else {
+			$(TimeAndDate.ID_CLOCK).html(TimeAndDate.getWallclockTime());
+		}
 		setTimeout(TimeAndDate.runWallClock, TimeAndDate.WALLCLOCK_UPDATE_INTERVAL_SECONDS * 1000);
 	}
+};
+
+TimeAndDate.getBinaryWallclockTime = function() {
+	var date = new Date();
+	date.setUTCHours(date.getUTCHours() + 2);
+	var h = date.getUTCHours().toString(2);
+	var m = date.getMinutes().toString(2);
+	var s = date.getSeconds().toString(2);
+	return TimeAndDate.pad(h, 5) + ":" + TimeAndDate.pad(m, 6) + ":" + TimeAndDate.pad(s, 6);
 };
 
 TimeAndDate.getWallclockTime = function() {
@@ -56,13 +70,6 @@ TimeAndDate.getWallclockTime = function() {
 	var m = TimeAndDate.leadingZero(date.getMinutes());
 	var s = TimeAndDate.leadingZero(date.getSeconds());
 	return day + "." + month + "." + year + " " + h + ":" + m + ":" + s;
-};
-
-TimeAndDate.leadingZero = function(timeElement) {
-	if(timeElement < 10) {
-		timeElement = "0" + timeElement;
-	}
-	return timeElement;
 };
 
 TimeAndDate.prettyTime = function(seconds) {
@@ -85,4 +92,17 @@ TimeAndDate.hoursMinutes = function(millis) {
 	date.setMinutes(date.getMinutes() + Math.floor(date.getSeconds() / 60));
 	var m = TimeAndDate.leadingZero(date.getMinutes());
 	return h + ":" + m;
+};
+
+TimeAndDate.leadingZero = function(timeElement) {
+	if(timeElement < 10) {
+		timeElement = "0" + timeElement;
+	}
+	return timeElement;
+};
+
+TimeAndDate.pad = function(number, length, padChar) {
+	padChar = padChar ? padChar : '0';
+    var pad = new Array(1 + length).join(padChar);
+    return (pad + number).slice(-pad.length);
 };
