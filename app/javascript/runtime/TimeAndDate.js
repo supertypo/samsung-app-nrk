@@ -51,8 +51,10 @@ TimeAndDate.runWallClock = function() {
 
 TimeAndDate.getBinaryWallclockTime = function() {
 	var date = new Date();
-	date.setUTCHours(date.getUTCHours() + 2);
-	var h = date.getUTCHours().toString(2);
+	//FIXME: handle this properly, some TVs thinks they're in the wrong zone
+//	date.setUTCHours(date.getUTCHours() + 2);
+//	var h = date.getUTCHours().toString(2);
+	var h = date.getHours().toString(2);
 	var m = date.getMinutes().toString(2);
 	var s = date.getSeconds().toString(2);
 	return TimeAndDate.pad(h, 5) + ":" + TimeAndDate.pad(m, 6) + ":" + TimeAndDate.pad(s, 6);
@@ -64,9 +66,9 @@ TimeAndDate.getWallclockTime = function() {
 	var month = TimeAndDate.leadingZero(date.getMonth() + 1);
 	var year = date.getFullYear().toString().substring(2);
 	//FIXME: handle this properly, some TVs thinks they're in the wrong zone
-	date.setUTCHours(date.getUTCHours() + 2);
-	var h = TimeAndDate.leadingZero(date.getUTCHours());
-//	var h = TimeAndDate.leadingZero(date.getHours());
+//	date.setUTCHours(date.getUTCHours() + 2);
+//	var h = TimeAndDate.leadingZero(date.getUTCHours());
+	var h = TimeAndDate.leadingZero(date.getHours());
 	var m = TimeAndDate.leadingZero(date.getMinutes());
 	var s = TimeAndDate.leadingZero(date.getSeconds());
 	return day + "." + month + "." + year + " " + h + ":" + m + ":" + s;
@@ -85,7 +87,7 @@ TimeAndDate.prettyTime = function(seconds) {
 
 TimeAndDate.hoursMinutes = function(millis) {
 	var date = new Date(millis);
-	//FIXME: handle this properly, tv is buggy
+	//FIXME: handle this properly, some TVs thinks they're in the wrong zone
 //	date.setUTCHours(date.getUTCHours() + 2);
 //	var h = TimeAndDate.leadingZero(date.getUTCHours());
 	var h = TimeAndDate.leadingZero(date.getHours());
