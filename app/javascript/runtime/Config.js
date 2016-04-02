@@ -13,7 +13,7 @@
 //	You should have received a copy of the GNU General Public License
 //	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 var Config = {
-		VERSION: "1.4.13",
+		VERSION: "1.4.14",
 		WEB_URL: "http://tv.nrk.no/",
 		RADIO_WEB_URL: "http://radio.nrk.no/",
 		API_URL: "http://v7.psapi.nrk.no/",
