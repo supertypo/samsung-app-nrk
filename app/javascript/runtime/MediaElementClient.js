@@ -47,7 +47,7 @@ MediaElementClient.lookupJsonList = function(menu, mediaElement) {
 						results.push(new MediaElement(
 								WebParserNg.getMediaId(url), 
 								MediaElementType.PROGRAM,
-								object["title"],
+								MediaElementClient.getTitle(object),
 								Config.WEB_URL + url,
 								null,
 								null,
@@ -137,6 +137,11 @@ MediaElementClient.getType = function(content) {
 MediaElementClient.getTitle = function(content) {
 	if (content["fullTitle"]) {
 		return content["fullTitle"];
+	} else if (content["seriesUrl"]) {
+		var episode = content["description"].match(/\d+:\d+/);
+		if (episode) {
+			return content["title"] + " " + episode;
+		}
 	}
 	return content["title"];
 };
