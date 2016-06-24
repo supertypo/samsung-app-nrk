@@ -86,9 +86,9 @@ TimeAndDate.prettyTime = function(seconds) {
 TimeAndDate.hoursMinutes = function(millis) {
 	var date = new Date(millis);
 	//FIXME: handle this properly, tv is buggy
-//	date.setUTCHours(date.getUTCHours() + 2);
-//	var h = TimeAndDate.leadingZero(date.getUTCHours());
-	var h = TimeAndDate.leadingZero(date.getHours());
+	date.setUTCHours(date.getUTCHours() + 2);
+	var h = TimeAndDate.leadingZero(date.getUTCHours());
+//	var h = TimeAndDate.leadingZero(date.getHours());
 	date.setMinutes(date.getMinutes() + Math.floor(date.getSeconds() / 60));
 	var m = TimeAndDate.leadingZero(date.getMinutes());
 	return h + ":" + m;
