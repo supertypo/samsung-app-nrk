@@ -142,15 +142,9 @@ WebParserNg.getRecommendedShows = function(menu, mediaElement) {
 	WebParserNg.getHtml(mediaElement.url, function(html) {
 		var results = [];
 		$(html).find(".listobject-list .listobject-link").each(function(index, value) {
-			var titleObj = $(value).find("h3");
-			if (titleObj.length > 0) {
-				results.push(new MediaElement(WebParserNg.getMediaId(value.pathname), MediaElementType.PROGRAM, 
-						titleObj.text(), WebParserNg.getUrlPrefix(mediaElement.url) + value.pathname));
-			} else { // Lookup elements with bad title
-				var result = MediaElementClient.lookupMediaElement(WebParserNg.getMediaId(value.pathname));
-				if (result) {
-					results.push(result);
-				}
+			var result = MediaElementClient.lookupMediaElement(WebParserNg.getMediaId(value.pathname));
+			if (result) {
+				results.push(result);
 			}
 		});
 		Logger.log("Found " + results.length + " recommended shows");

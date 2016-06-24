@@ -67,14 +67,14 @@ MediaElementClient.lookupJsonList = function(menu, mediaElement) {
 };
 
 MediaElementClient.lookupMediaElement = function(mediaId, forceReload, callback) {
+	mediaId = mediaId.toLowerCase();
 	var async = true;
 	if (!callback) {
 		callback = function() {};
 		async = false;
 	}
-	var result = MediaElementCache.get(mediaId);
-	if (forceReload) {
-		result = null;
+	if (!forceReload) {
+		result = MediaElementCache.get(mediaId);
 	}
 	if (result) {
 		callback(result);
@@ -94,7 +94,7 @@ MediaElementClient.lookupMediaElement = function(mediaId, forceReload, callback)
 						content["mediaUrl"] = WebParserNg.getMediaUrl(urlPrefix + content["relativeOriginUrl"]);
 					}
 					result = new MediaElement(
-							content["id"], 
+							content["id"],
 							MediaElementClient.getType(content),
 							MediaElementClient.getTitle(content),
 							urlPrefix + content["relativeOriginUrl"],
