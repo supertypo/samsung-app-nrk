@@ -79,7 +79,11 @@ function Menu(parentMenu, mediaElement, expiredMenu) {
 				enrich(mediaElement, false, function(enrichedMediaElement) {
 					if (enrichedMediaElement) {
 						Graphics.displayEpg(enrichedMediaElement);
-						Background.change(enrichedMediaElement.imageUrl);
+						if (enrichedMediaElement.type != MediaElementType.LIVE) {
+							Background.change(enrichedMediaElement.imageUrl);
+						} else {
+							Background.change(null);
+						}
 					} else {
 						Graphics.hideEpg();
 					}
