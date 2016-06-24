@@ -78,8 +78,7 @@ MediaElementClient.lookupMediaElement = function(mediaId, forceReload, callback)
 	}
 	if (result) {
 		callback(result);
-	}
-	else {
+	} else {
 		Logger.log("Looking up mediaElement for id: " + mediaId + " (async: " + async + ")");
 		$.ajax({
 			dataType: "json",

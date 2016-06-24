@@ -135,11 +135,13 @@ MenuManager.keyEnter = function() {
 							MenuManager.keyReturn();
 						} else if (selectedValue.mediaUrl) {
 							MenuManager.hasMoved = false;
-							if (selectedValue.type == MediaElementType.EPISODE) {
-								LastSeen.put(new MediaElement(null, MediaElementType.SERIES, selectedValue.seriesTitle + "*",
-										selectedValue.url, selectedValue.description, null, selectedValue.imageUrl));
-							} else {
-								LastSeen.put(selectedValue);
+							if (selectedValue.type != MediaElementType.LIVE) {
+								if (selectedValue.type == MediaElementType.EPISODE) {
+									LastSeen.put(new MediaElement(null, MediaElementType.SERIES, selectedValue.seriesTitle + "*",
+											selectedValue.url, selectedValue.description, null, selectedValue.imageUrl));
+								} else {
+									LastSeen.put(selectedValue);
+								}
 							}
 							Player.play(selectedValue);
 							Graphics.showDescription(MenuManager.INFO_TIMEOUT_SECONDS);
