@@ -263,7 +263,7 @@ WebParserNg.getEpisodes = function(menu, mediaElement) {
 		});
 		Logger.log("Found " + results.length + " episodes");
 //		menu.setMediaElements(WebParserNg.sort(results));
-		menu.setMediaElements(results.reverse());
+		menu.setMediaElements(results);
 	});
 };
 
