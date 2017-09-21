@@ -165,6 +165,9 @@ WebParserNg.getCategories = function(menu, mediaElement, mediaElementType) {
 				results.push(new MediaElement(null, mediaElementType, value.text.trim(), urlPrefix + value.pathname));
 			}
 		});
+		results.sort(function(a, b) {
+		    return (a < b) ? -1 : 1;
+		});
 		Logger.log("Found " + results.length + " categories");
 		menu.setMediaElements(results);
 	});
