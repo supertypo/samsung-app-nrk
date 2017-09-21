@@ -8,6 +8,6 @@ App for NRK på Samsung Smart TV.
 Prosjekthjemmeside: http://marius.thoering.no
 Utviklerverktøy: http://samsungdforum.com
 
-Det må migreringsarbeid til for at appen skal støtte 2015-modeller (Tizen).
+Det må migreringsarbeid til for at appen skal støtte 2015-modeller, og nyere (Tizen).
 - Samsung har dokumentert hvordan man migrerer her:
     http://www.samsungdforum.com/tizenguide/?Foldername=tizen61&Filename=index.html
