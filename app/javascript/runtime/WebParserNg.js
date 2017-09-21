@@ -238,9 +238,9 @@ WebParserNg.getSeasons = function(menu, mediaElement) {
 	WebParserNg.getHtml(mediaElement.url, function(html) {
 		var urlPrefix = WebParserNg.getUrlPrefix(mediaElement.url);
 		var results = [];
-		$(html).find(".season-link.ga").each(function(index, value) {
+		$(html).find(".season-link").each(function(index, value) {
 			var title = WebParserNg.cleanupSeasonName(value.text);
-			if (title) {
+			if (title && $(value).attr('data-identifier')) {
 				results.push(new MediaElement(null, MediaElementType.SEASON, title, 
 						urlPrefix + value.pathname, null, null, mediaElement.imageUrl));
 			}
