@@ -14,7 +14,7 @@
 //	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 var Update = {
 		URL_UPDATE: "http://marius.thoering.no/info/",
-		DISPLAY_INFO_SECONDS: 15,
+		DISPLAY_INFO_SECONDS: 30,
 		DISPLAY_WARNING_SECONDS: 60,
 		ID_INFO: "#info",
 		currentRetry: 0
