@@ -130,7 +130,8 @@ WebParserNg.getLiveChannels = function(menu, mediaElement) {
 		WebParserNg.getHtml(mediaElement.url, function(html) {
 			var results = [];
 			$(html).find(".radio-channel .channel-link").each(function(index, value) {
-				results.push(new MediaElement(WebParserNg.getMediaId(value.pathname), MediaElementType.LIVE, value.text.trim()));
+				var title = value.title.replace("Hør", "").replace("direkte", "").trim();
+				results.push(new MediaElement(WebParserNg.getMediaId(value.pathname), MediaElementType.LIVE, title));
 			});
 			Logger.log("Found " + results.length + " live channels");
 			menu.setMediaElements(results);
